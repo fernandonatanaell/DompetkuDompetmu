@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="18dp"
+    android:paddingVertical="24dp"
+    tools:context=".myactivity.user.UserMakeDonationActivity">
+
+    <Button
+        android:id="@+id/btnBackFromDonation"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-10dp"
+        app:cornerRadius="5dp"
+        app:icon="@drawable/ic_baseline_arrow_back_ios_new_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/myPrimaryColor"
+        app:strokeWidth="0dp" />
+
+    <TextView
+        android:id="@+id/tvHeadingDonation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Donation"
+        android:textColor="@color/mySecondaryColor"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/btnBackFromDonation"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilWalletDonation"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:hint="Select wallet"
+        app:helperTextTextColor="@color/myErrorColor"
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingDonation"
+        tools:layout_editor_absoluteX="18dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/etWalletListDonation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilAmountDonation"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Amount"
+        app:helperTextTextColor="@color/myErrorColor"
+        app:layout_constraintTop_toBottomOf="@+id/tilWalletDonation"
+        app:prefixText="Rp "
+        tools:layout_editor_absoluteX="18dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAmountDonation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnSubmitDonation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="196dp"
+        android:text="SUBMIT DONATION"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.542"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingDonation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

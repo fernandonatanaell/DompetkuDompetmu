@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.DompetkuDompetmu" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/myPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/myPrimaryContainerColor</item>
+        <item name="colorOnPrimary">@color/myOnPrimaryColor</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/mySecondaryColor</item>
+        <item name="colorSecondaryVariant">@color/mySecondaryContainerColor</item>
+        <item name="colorOnSecondary">@color/myOnSecondaryColor</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+    <style name="Theme.DompetkuDompetmu.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="Theme.DompetkuDompetmu.AppBarOverlay"
+        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.DompetkuDompetmu.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

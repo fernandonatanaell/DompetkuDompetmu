@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".myfragment.user.UserHomepageFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hello!"
+                android:textColor="@color/myPrimaryColor"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvUsernameHomepage"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:text="tvUsernameHomepage"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivNotification"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="6"
+            android:src="@drawable/ic_baseline_notifications_24" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/background_card">
+
+        <TextView
+            android:id="@+id/tvHeadingTotalAssetHomepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Asset"
+            android:textColor="#000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTotalAssetHomepage"
+            android:layout_width="320dp"
+            android:layout_height="32dp"
+            android:text="Rp 0,00"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeadingTotalAssetHomepage" />
+
+        <TextView
+            android:id="@+id/tvHeadingAppNameHomepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DKDM"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvNameUserHomepage"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:gravity="bottom"
+            android:text="tvNameUserHomepage"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivAddNewWallet"
+            android:layout_width="45dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="-5dp"
+            android:src="@drawable/ic_baseline_add_circle_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnToTopup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/myTertiaryContainerColor"
+            android:text="TOP UP"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:iconGravity="textTop" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnToWithdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_weight="1"
+            android:background="@color/myTertiaryContainerColor"
+            android:text="WITHDRAW"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:iconGravity="top" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnToMyCharityHomepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/myTertiaryContainerColor"
+            android:text="ADD CHARITY"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            app:iconGravity="top" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Available Wallets"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUserWallets"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

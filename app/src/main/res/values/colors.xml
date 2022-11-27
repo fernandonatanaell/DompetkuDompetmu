@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <color name="purple_200">#FFBB86FC</color>-->
+<!--    <color name="purple_500">#FF6200EE</color>-->
+<!--    <color name="purple_700">#FF3700B3</color>-->
+<!--    <color name="teal_200">#FF03DAC5</color>-->
+<!--    <color name="teal_700">#FF018786</color>-->
+<!--    <color name="black">#FF000000</color>-->
+<!--    <color name="white">#FFFFFFFF</color>-->
+
+    <color name="backgroundColor">#DEECFC</color>
+
+    <color name="myPrimaryColor">#0161a3</color>
+    <color name="myOnPrimaryColor">#ffffff</color>
+    <color name="myPrimaryContainerColor">#d1e4ff</color>
+    <color name="myOnPrimaryContainerColor">#001d36</color>
+
+    <color name="mySecondaryColor">#0061a2</color>
+    <color name="myOnSecondaryColor">#ffffff</color>
+    <color name="mySecondaryContainerColor">#d1e4ff</color>
+    <color name="myOnSecondaryVariantColor">#001d36</color>
+
+    <color name="myTertiaryColor">#704da0</color>
+    <color name="myOnTertiaryColor">#ffffff</color>
+    <color name="myTertiaryContainerColor">#eddcff</color>
+    <color name="myOnTertiaryVariantColor">#290055</color>
+
+    <color name="myOutlineColor">#73777f</color>
+    <color name="mySurfaceVariantColor">#dfe2eb</color>
+    <color name="myOnSurfaceColor">#011e2e</color>
+    <color name="myOnSurfaceVariantColor">#43474e</color>
+
+    <color name="myErrorColor">#ba1a1a</color>
+    <color name="myErrorContainerColor">#ffdad6</color>
+    <color name="myOnErrorContainerColor">#410002</color>
+</resources>
