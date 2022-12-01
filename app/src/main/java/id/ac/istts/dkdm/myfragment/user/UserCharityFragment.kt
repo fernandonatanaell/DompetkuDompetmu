@@ -2,6 +2,8 @@ package id.ac.istts.dkdm.myfragment.user
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,16 +53,7 @@ class UserCharityFragment(
 
         // SET VIEW
         coroutine.launch {
-            val tempAllCharity = db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>
-            requireActivity().runOnUiThread {
-                binding.rvAllCharity.adapter = RVCharityAdapter(tempAllCharity, false){ selectedCharityId: Int ->
-                    refreshLauncher.launch(Intent(view.context, UserMakeDonationActivity::class.java).apply {
-                        putExtra("usernameLogin", usernameLogin)
-                        putExtra("selectedCharityId", selectedCharityId)
-                    })
-                }
-                binding.rvAllCharity.layoutManager = LinearLayoutManager(view.context)
-            }
+            loadCharity(view, db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
         }
 
         binding.btnToMyCharity.setOnClickListener {
@@ -71,6 +64,37 @@ class UserCharityFragment(
                 .beginTransaction()
                 .replace(R.id.mainFL, UserMyCharityFragment(db, coroutine, usernameLogin))
                 .commit()
+        }
+
+        binding.etSearchCharity.addTextChangedListener (object: TextWatcher {
+
+            override fun afterTextChanged(s: Editable) {}
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                coroutine.launch {
+                    if(s.toString().isBlank()){
+                        loadCharity(view, db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+                    } else {
+                        loadCharity(view, db.charityDao.getAllCharityExceptThisUserFilter(usernameLogin, binding.etSearchCharity.text.toString()) as ArrayList<CharityEntity>)
+                    }
+                }
+            }
+        })
+    }
+
+    private fun loadCharity(view: View, listOfCharity: ArrayList<CharityEntity>){
+        requireActivity().runOnUiThread {
+            binding.rvAllCharity.adapter = RVCharityAdapter(listOfCharity, false){ selectedCharityId: Int ->
+                refreshLauncher.launch(Intent(view.context, UserMakeDonationActivity::class.java).apply {
+                    putExtra("usernameLogin", usernameLogin)
+                    putExtra("selectedCharityId", selectedCharityId)
+                })
+            }
+            binding.rvAllCharity.layoutManager = LinearLayoutManager(view.context)
         }
     }
 }

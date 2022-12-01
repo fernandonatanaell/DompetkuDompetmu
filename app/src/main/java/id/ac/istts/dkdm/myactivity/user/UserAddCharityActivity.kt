@@ -60,51 +60,76 @@ class UserAddCharityActivity : AppCompatActivity() {
             val charityName = binding.etNewCharityName.text.toString()
             val charityDescription = binding.etNewCharityDescription.text.toString()
             val charityFundsGoal = binding.etNewCharityFundsGoal.text.toString()
+            val userPIN = binding.etUserPINAddCharity.text.toString()
             resetErrorInput()
 
-            if(charityName.isBlank() || charityDescription.isBlank() || charityFundsGoal.isBlank()){
+            if(charityName.isBlank() || charityDescription.isBlank() || charityFundsGoal.isBlank() || userPIN.isBlank()){
                 if(charityName.isBlank())
-                    binding.tilNewCharityName.error = "Charity name is required!"
+                    binding.tilNewCharityName.error = "Charity name required!"
 
                 if(charityDescription.isBlank())
-                    binding.tilNewCharityDescription.error = "Charity description is required!"
+                    binding.tilNewCharityDescription.error = "Charity description required!"
 
                 if(charityFundsGoal.isBlank())
-                    binding.tilAddCharityFundsGoal.error = "Funds goal is required!"
-            } else if(charityFundsGoal.toLong() > 2000000000){
-                binding.tilAddCharityFundsGoal.error = "Funds goal can't be greater than Rp. 2 billion!"
-            } else if(charityFundsGoal.toInt() >= 10000) {
+                    binding.tilAddCharityFundsGoal.error = "Fund goal required!"
+
+                if(userPIN.isBlank())
+                    binding.tilUserPINAddCharity.error = "PIN required!"
+            } else {
                 coroutine.launch {
-                    val getUser = db.userDao.checkUsername(usernameLogin)
+                    val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
 
-                    if(getUser!!.isUserBanned){
+                    if(userPIN.toInt() != getUserPin){
                         runOnUiThread {
-                            val alert = AlertDialog.Builder(this@UserAddCharityActivity)
-                            alert.setTitle("Ooooppss!")
-                            alert.setMessage("You can't create a new charity because your account has been banned by Admin!")
-
-                            alert.setPositiveButton("OK") { _, _ ->
-                            }
-
-                            alert.show()
+                            Toast.makeText(
+                                this@UserAddCharityActivity,
+                                "Oopps! Your PIN is incorrect!",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     } else {
-                        val newCharity = CharityEntity(
-                            charity_name = charityName,
-                            charity_description = charityDescription,
-                            source_id_wallet = selectedWallet.wallet_id,
-                            fundsGoal = charityFundsGoal.toLong()
-                        )
-                        db.charityDao.insert(newCharity)
+                        if(charityFundsGoal.toLong() > 2000000000){
+                            binding.tilAddCharityFundsGoal.error = "Fund goal can't be greater than Rp. 2 billion!"
+                        } else if(charityFundsGoal.toInt() >= 10000) {
+                            coroutine.launch {
+                                val getUser = db.userDao.getFromUsername(usernameLogin)
 
-                        runOnUiThread {
-                            Toast.makeText(this@UserAddCharityActivity, "Yayy! Successfully added a new charity!", Toast.LENGTH_LONG).show()
-                            finish()
+                                if(getUser!!.isUserBanned){
+                                    runOnUiThread {
+                                        val alert = AlertDialog.Builder(this@UserAddCharityActivity)
+                                        alert.setTitle("Ooooppss!")
+                                        alert.setMessage("Your account has been banned by Admin so you can't add new charities!!")
+
+                                        alert.setPositiveButton("OK") { _, _ ->
+                                        }
+
+                                        alert.show()
+                                    }
+                                } else {
+                                    val newCharity = CharityEntity(
+                                        charity_name = charityName,
+                                        charity_description = charityDescription,
+                                        source_id_wallet = selectedWallet.wallet_id,
+                                        fundsGoal = charityFundsGoal.toLong()
+                                    )
+                                    db.charityDao.insert(newCharity)
+
+                                    runOnUiThread {
+                                        Toast.makeText(
+                                            this@UserAddCharityActivity,
+                                            "Yayy! A new charity was successfully added!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+
+                                        finish()
+                                    }
+                                }
+                            }
+                        } else {
+                            binding.tilAddCharityFundsGoal.error = "Fund goal must be greater than or equal to Rp 10.000!"
                         }
                     }
                 }
-            } else {
-                binding.tilAddCharityFundsGoal.error = "The funds goal must be greater than or equals to Rp 10.000!"
             }
         }
 
@@ -117,5 +142,6 @@ class UserAddCharityActivity : AppCompatActivity() {
         binding.tilNewCharityName.error = null
         binding.tilNewCharityDescription.error = null
         binding.tilAddCharityFundsGoal.error = null
+        binding.tilUserPINAddCharity.error = null
     }
 }

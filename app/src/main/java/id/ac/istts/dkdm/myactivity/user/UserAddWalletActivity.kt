@@ -43,34 +43,57 @@ class UserAddWalletActivity : AppCompatActivity() {
         binding.btnSubmitAddWallet.setOnClickListener {
             val newWalletName = binding.etNewWalletName.text.toString()
             val newWalletBalance = binding.etNewWalletBalance.text.toString()
+            val userPIN = binding.etUserPINAddWallet.text.toString()
             resetErrorInput()
 
-            if(newWalletName.isBlank() || newWalletBalance.isBlank()){
+            if(newWalletName.isBlank() || newWalletBalance.isBlank() || userPIN.isBlank()){
                 if(newWalletName.isBlank())
-                    binding.tilNewWalletName.error = "Wallet name is required!"
+                    binding.tilNewWalletName.error = "Wallet name required!"
 
                 if(newWalletBalance.isBlank())
-                    binding.tilNewWalletBalance.error = "Wallet balance is required!"
+                    binding.tilNewWalletBalance.error = "The balance required!"
+
+                if(userPIN.isBlank())
+                    binding.tilUserPINAddWallet.error = "PIN required!"
             } else {
-                val earlyBalanceWallet = newWalletBalance.toLong()
+                coroutine.launch {
+                    val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
 
-                if(earlyBalanceWallet <= 0L){
-                    binding.tilNewWalletBalance.error = "Wallet balance must be greater than 0!"
-                } else {
-                    val newWallet = WalletEntity(
-                        username_user = usernameLogin,
-                        walletName = newWalletName,
-                        walletBalance = earlyBalanceWallet,
-                        isMainWallet = false
-                    )
-
-                    coroutine.launch {
-                        db.walletDao.insert(newWallet)
+                    if(userPIN.toInt() != getUserPin){
                         runOnUiThread {
-                            Toast.makeText(this@UserAddWalletActivity, "Yayy! Successfully add a new wallet!", Toast.LENGTH_LONG).show()
-                            val resultIntent = Intent()
-                            setResult(Activity.RESULT_OK, resultIntent)
-                            finish()
+                            Toast.makeText(
+                                this@UserAddWalletActivity,
+                                "Oopps! Your PIN is incorrect!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        val earlyBalanceWallet = newWalletBalance.toLong()
+
+                        if(earlyBalanceWallet < 5000L){
+                            runOnUiThread {
+                                binding.tilNewWalletBalance.error = "The balance should be greater than Rp 5.000!"
+                            }
+                        } else {
+                            val newWallet = WalletEntity(
+                                username_user = usernameLogin,
+                                walletName = newWalletName,
+                                walletBalance = earlyBalanceWallet,
+                                isMainWallet = false
+                            )
+
+                            db.walletDao.insert(newWallet)
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@UserAddWalletActivity,
+                                    "Yayy! Successfully added new wallet!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                val resultIntent = Intent()
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
+                            }
                         }
                     }
                 }
@@ -87,5 +110,6 @@ class UserAddWalletActivity : AppCompatActivity() {
     private fun resetErrorInput(){
         binding.tilNewWalletName.error = null
         binding.tilNewWalletBalance.error = null
+        binding.tilUserPINAddWallet.error = null
     }
 }

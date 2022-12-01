@@ -6,48 +6,62 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="18dp"
     android:paddingVertical="24dp"
-    tools:context=".myactivity.user.UserAddCharityActivity">
+    tools:context=".myactivity.user.UserTransferActivity">
 
     <Button
-        android:id="@+id/btnBackFromAddCharity"
+        android:id="@+id/btnBackFromTransfer"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="60dp"
+        android:layout_width="58dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="-10dp"
+        android:layout_marginTop="-3dp"
         app:cornerRadius="5dp"
-        app:icon="@drawable/ic_baseline_arrow_back_ios_new_24"
+        app:icon="@drawable/ic_baseline_close_24"
+        app:iconSize="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/myPrimaryColor"
         app:strokeWidth="0dp" />
 
     <TextView
-        android:id="@+id/tvHeadingAddCharity"
+        android:id="@+id/tvHeadingTransfer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Charity"
+        android:text="Transfer"
         android:textColor="@color/mySecondaryColor"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/btnBackFromAddCharity"
+        app:layout_constraintStart_toEndOf="@+id/btnBackFromTransfer"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnToMyContact"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My contacts"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/myPrimaryColor"
+        app:strokeWidth="1dp" />
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilWalletAddCharity"
+        android:id="@+id/tilSelectContactTransfer"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="-14dp"
         android:layout_marginTop="28dp"
         android:layout_marginEnd="-14dp"
-        android:hint="Select Wallet"
+        android:hint="Select Contact"
         app:helperTextTextColor="@color/myErrorColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingAddCharity">
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingTransfer">
 
         <AutoCompleteTextView
-            android:id="@+id/etWalletCharityList"
+            android:id="@+id/etSelectContactTransfer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#00FFFFFF"
@@ -55,105 +69,97 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNewCharityName"
+        android:id="@+id/tilSelectWalletTransfer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-14dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="-14dp"
+        android:hint="Select Wallet"
+        app:helperTextTextColor="@color/myErrorColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btnBackFromTransfer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilSelectContactTransfer">
+
+        <AutoCompleteTextView
+            android:id="@+id/etSelectWalletTransfer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilAmountTransfer"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:hint="Charity Name"
+        android:hint="Amount"
         app:helperTextTextColor="@color/myErrorColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilWalletAddCharity">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNewCharityName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNewCharityDescription"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="102dp"
-        android:hint="Charity Description"
-        app:helperTextTextColor="@color/myErrorColor"
-        app:layout_constraintTop_toBottomOf="@+id/tilWalletAddCharity"
-        tools:layout_editor_absoluteX="18dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNewCharityDescription"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:gravity="start"
-            android:inputType="textMultiLine" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilAddCharityFundsGoal"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="257dp"
-        android:hint="Funds Goal"
-        app:helperTextTextColor="@color/myErrorColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.457"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilWalletAddCharity"
+        app:layout_constraintTop_toBottomOf="@+id/tilSelectWalletTransfer"
         app:prefixText="Rp ">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNewCharityFundsGoal"
+            android:id="@+id/etAmountTransfer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilUserPINAddCharity"
+        android:id="@+id/tilDescriptionTransfer"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="347dp"
+        android:layout_marginTop="106dp"
+        android:hint="Description"
+        app:helperTextTextColor="@color/myErrorColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilSelectWalletTransfer">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescriptionTransfer"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="start"
+            android:inputType="textMultiLine" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilUserPINTransfer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="296dp"
         android:hint="PIN"
         app:helperTextTextColor="@color/myErrorColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilWalletAddCharity">
+        app:layout_constraintTop_toBottomOf="@+id/tilSelectWalletTransfer">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etUserPINAddCharity"
+            android:id="@+id/etUserPINTransfer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSelectImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="530dp"
-        android:background="@color/myTertiaryContainerColor"
-        android:paddingHorizontal="20dp"
-        android:text="UPLOAD IMAGE"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingAddCharity" />
-
     <Button
-        android:id="@+id/btnSubmitCharity"
+        android:id="@+id/btnSubmitTransfer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="ADD CHARITY"
+        android:layout_marginTop="386dp"
+        android:text="TRANSFER"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.514"
+        app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectImage" />
-
+        app:layout_constraintTop_toBottomOf="@+id/tilSelectWalletTransfer" />
 </androidx.constraintlayout.widget.ConstraintLayout>

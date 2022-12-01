@@ -11,8 +11,11 @@ interface UserDao {
     suspend fun update(user: UserEntity)
 
     @Query("SELECT * FROM users WHERE username = :username")
-    suspend fun checkUsername(username: String): UserEntity?
+    suspend fun getFromUsername(username: String): UserEntity?
 
     @Query("SELECT * FROM users")
     suspend fun getAllUsers(): List<UserEntity>
+
+    @Query("SELECT * FROM users WHERE accountNumber = :accountNumber")
+    suspend fun checkAccountNumber(accountNumber: Long): UserEntity?
 }

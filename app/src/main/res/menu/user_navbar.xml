@@ -13,13 +13,18 @@
         android:icon="@drawable/ic_baseline_volunteer_activism_24"
         android:title="Charity" />
     <item
+        android:id="@+id/menu_user_transfer"
+        android:checked="false"
+        android:icon="@drawable/ic_baseline_arrow_circle_up_24"
+        android:title="Transfer" />
+    <item
         android:id="@+id/menu_user_history"
         android:checked="false"
         android:icon="@drawable/ic_baseline_history_24"
         android:title="History" />
     <item
-        android:id="@+id/menu_user_logout"
+        android:id="@+id/menu_user_notification"
         android:checked="false"
-        android:icon="@drawable/ic_baseline_logout_24"
-        android:title="Logout" />
+        android:icon="@drawable/ic_baseline_notifications_24"
+        android:title="Notification" />
 </menu>

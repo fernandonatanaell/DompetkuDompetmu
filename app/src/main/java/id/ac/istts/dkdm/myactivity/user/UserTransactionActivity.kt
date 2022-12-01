@@ -79,63 +79,90 @@ class UserTransactionActivity : AppCompatActivity() {
         binding.btnSubmitTransaction.setOnClickListener {
             val transactionDescription = binding.etDescriptionTransaction.text.toString()
             val transactionAmount = binding.etAmountTransaction.text.toString()
+            val userPIN = binding.etUserPINTransfer.text.toString()
             resetErrorInput()
 
-            if(transactionAmount.isBlank() || transactionDescription.isBlank()){
+            if(transactionAmount.isBlank() || transactionDescription.isBlank() || userPIN.isBlank()){
                 if(transactionAmount.isBlank())
-                    binding.tilAmountTransaction.error = "Amount is required!"
+                    binding.tilAmountTransaction.error = "Amount required!"
 
                 if(transactionDescription.isBlank())
-                    binding.tilDescriptionTransaction.error = "Description is required!"
-            } else if(transactionAmount.toLong() > 0) {
-                var isBalanceWalletEnough = true
-                if(inWithdrawMode && selectedWallet.walletBalance < transactionAmount.toLong()){
-                    isBalanceWalletEnough = false
-                }
+                    binding.tilDescriptionTransaction.error = "Description required!"
 
-                if(isBalanceWalletEnough){
-                    val newHistory = HistoryEntity(
-                        id_wallet = selectedWallet.wallet_id,
-                        historyType = if (inWithdrawMode) "Withdraw" else "Income",
-                        historyDescription = transactionDescription,
-                        historyAmount = transactionAmount.toLong()
-                    )
+                if(userPIN.isBlank())
+                    binding.tilUserPINTransfer.error = "PIN required!"
+            } else if(transactionAmount.toLong() > 500) {
+                coroutine.launch {
+                    val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
 
-                    coroutine.launch {
-                        db.historyDao.insert(newHistory)
-                        val newNotifications: NotificationEntity
-
-                        val selectedWallet = db.walletDao.get(newHistory.id_wallet)
-                        if(newHistory.historyType == "Withdraw"){
-                            selectedWallet!!.walletBalance -= newHistory.historyAmount
-
-                            newNotifications = NotificationEntity(
-                                notification_text = "Your withdraw of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
-                                username_user = usernameLogin
-                            )
-                        } else {
-                            selectedWallet!!.walletBalance += newHistory.historyAmount
-
-                            newNotifications = NotificationEntity(
-                                notification_text = "Your top up of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
-                                username_user = usernameLogin
-                            )
-                        }
-                        db.walletDao.update(selectedWallet)
-                        db.notificationDao.insert(newNotifications)
-
+                    if(userPIN.toInt() != getUserPin){
                         runOnUiThread {
-                            Toast.makeText(this@UserTransactionActivity, "Yayy! Transaction success!", Toast.LENGTH_LONG).show()
-                            val resultIntent = Intent()
-                            setResult(Activity.RESULT_OK, resultIntent)
-                            finish()
+                            Toast.makeText(
+                                this@UserTransactionActivity,
+                                "Oopps! Your PIN is incorrect!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        var isBalanceWalletEnough = true
+                        if(inWithdrawMode && selectedWallet.walletBalance < transactionAmount.toLong()){
+                            isBalanceWalletEnough = false
+                        }
+
+                        if(isBalanceWalletEnough){
+                            val newHistory = HistoryEntity(
+                                id_wallet = selectedWallet.wallet_id,
+                                historyType = if (inWithdrawMode) "Withdraw" else "Income",
+                                historyDescription = transactionDescription,
+                                historyAmount = transactionAmount.toLong()
+                            )
+
+                            db.historyDao.insert(newHistory)
+                            val newNotifications: NotificationEntity
+
+                            val selectedWallet = db.walletDao.get(newHistory.id_wallet)
+                            if(newHistory.historyType == "Withdraw"){
+                                selectedWallet!!.walletBalance -= newHistory.historyAmount
+
+                                newNotifications = NotificationEntity(
+                                    notification_text = "Your withdraw of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
+                                    username_user = usernameLogin
+                                )
+                            } else {
+                                selectedWallet!!.walletBalance += newHistory.historyAmount
+
+                                newNotifications = NotificationEntity(
+                                    notification_text = "Your top up of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
+                                    username_user = usernameLogin
+                                )
+                            }
+                            db.walletDao.update(selectedWallet)
+                            db.notificationDao.insert(newNotifications)
+
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@UserTransactionActivity,
+                                    "Yayy! Transaction succeeded!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                val resultIntent = Intent()
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
+                            }
+                        } else {
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this@UserTransactionActivity,
+                                    "Oopps! You have insufficient balance!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
-                } else {
-                    Toast.makeText(this@UserTransactionActivity, "Oopps! Your balance is insufficient!", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                binding.tilAmountTransaction.error = "The amount must be greater than 0!"
+                binding.tilAmountTransaction.error = "Amount must be greater than Rp 500!"
             }
         }
 
@@ -170,5 +197,6 @@ class UserTransactionActivity : AppCompatActivity() {
     private fun resetErrorInput(){
         binding.tilDescriptionTransaction.error = null
         binding.tilAmountTransaction.error = null
+        binding.tilUserPINTransfer.error = null
     }
 }

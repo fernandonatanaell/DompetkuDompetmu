@@ -16,6 +16,9 @@ interface CharityDao {
     @Query("SELECT * FROM charities AS c JOIN wallets AS w ON c.source_id_wallet = w.wallet_id WHERE c.isCharityIsOver = 0 AND c.isCharityBanned = 0 AND w.username_user <> :username")
     suspend fun getAllCharityExceptThisUser(username: String): List<CharityEntity>
 
+    @Query("SELECT * FROM charities AS c JOIN wallets AS w ON c.source_id_wallet = w.wallet_id WHERE c.isCharityIsOver = 0 AND c.isCharityBanned = 0 AND w.username_user <> :username AND c.charity_name LIKE '%' || :charity_name || '%' ")
+    suspend fun getAllCharityExceptThisUserFilter(username: String, charity_name: String): List<CharityEntity>
+
     @Query("SELECT * FROM charities AS c JOIN wallets AS w ON c.source_id_wallet = w.wallet_id WHERE c.isCharityIsOver = 0 AND w.username_user = :username")
     suspend fun getAllMyCharity(username: String): List<CharityEntity>
 

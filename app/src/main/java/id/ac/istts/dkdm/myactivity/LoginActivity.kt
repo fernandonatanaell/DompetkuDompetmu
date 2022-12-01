@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         // SET VIEW
         resetErrorInput()
         binding.btnLogin.setOnClickListener {
-            val usernameLogin = binding.etUsernameLogin.text.toString()
+            val usernameLogin = binding.etUsernameLogin.text.toString().lowercase()
             val passwordLogin = binding.etPasswordLogin.text.toString()
             resetErrorInput()
 
@@ -51,11 +51,15 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(Intent(this@LoginActivity, AdminMainActivity::class.java))
                 } else {
                     coroutine.launch {
-                        val tempUser = db.userDao.checkUsername(usernameLogin)
+                        val tempUser = db.userDao.getFromUsername(usernameLogin)
 
                         if (tempUser == null) {
                             runOnUiThread {
-                                Toast.makeText(this@LoginActivity, "Huhhh.. User not found!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Huhhh.. User not found!",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         } else {
                             if(tempUser.password != passwordLogin){

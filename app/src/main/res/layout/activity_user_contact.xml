@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="18dp"
     android:paddingVertical="24dp"
-    tools:context=".myactivity.user.UserAddWalletActivity">
+    tools:context=".myactivity.user.UserContactActivity">
 
     <Button
-        android:id="@+id/btnBackFromAddWallet"
+        android:id="@+id/btnBackFromContact"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
@@ -22,85 +22,74 @@
         app:strokeWidth="0dp" />
 
     <TextView
-        android:id="@+id/tvHeadingTransaction"
+        android:id="@+id/tvHeadingContact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Wallet"
+        android:text="Contact"
         android:textColor="@color/mySecondaryColor"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/btnBackFromAddWallet"
+        app:layout_constraintStart_toEndOf="@+id/btnBackFromContact"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNewWalletName"
+        android:id="@+id/tilFriendAccountNumber"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:hint="Wallet Name"
-        app:helperTextTextColor="@color/myErrorColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingTransaction">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNewWalletName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNewWalletBalance"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="118dp"
-        android:hint="Wallet Balance"
-        app:prefixText="Rp "
+        android:hint="Account Number"
         app:helperTextTextColor="@color/myErrorColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingTransaction">
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingContact">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNewWalletBalance"
+            android:id="@+id/etFriendAccountNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilUserPINAddWallet"
+        android:id="@+id/tilUserPINContact"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="208dp"
+        android:layout_marginTop="118dp"
         android:hint="PIN"
         app:helperTextTextColor="@color/myErrorColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingTransaction">
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingContact">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etUserPINAddWallet"
+            android:id="@+id/etUserPINContact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnSubmitAddWallet"
+        android:id="@+id/btnAddFriend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="298dp"
-        android:text="ADD WALLET"
+        android:layout_marginTop="216dp"
+        android:text="ADD CONTACT"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingTransaction" />
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingContact" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvContact"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddFriend" />
 </androidx.constraintlayout.widget.ConstraintLayout>

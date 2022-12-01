@@ -11,6 +11,7 @@ import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.floor
 
 @Suppress("DEPRECATION")
 class RegisterActivity : AppCompatActivity() {
@@ -36,12 +37,13 @@ class RegisterActivity : AppCompatActivity() {
         resetErrorInput()
         binding.btnRegister.setOnClickListener {
             val nameRegister = binding.etNameRegister.text.toString()
-            val usernameRegister = binding.etUsernameRegister.text.toString()
+            val usernameRegister = binding.etUsernameRegister.text.toString().lowercase()
             val passwordRegister = binding.etPasswordRegister.text.toString()
             val passwordConfirmationRegister = binding.etPasswordConfirmationRegister.text.toString()
+            val userPINRegister = binding.etUserPIN.text.toString()
             resetErrorInput()
 
-            if(nameRegister.isBlank() || usernameRegister.isBlank() || passwordRegister.isBlank() || passwordConfirmationRegister.isBlank()){
+            if(nameRegister.isBlank() || usernameRegister.isBlank() || passwordRegister.isBlank() || passwordConfirmationRegister.isBlank() || userPINRegister.isBlank()){
                 if(nameRegister.isBlank())
                     binding.tilNameRegister.error = "Name is required!"
 
@@ -53,11 +55,14 @@ class RegisterActivity : AppCompatActivity() {
 
                 if(passwordConfirmationRegister.isBlank())
                     binding.tilPasswordConfirmationRegister.error = "Confirmation password is required!"
+
+                if(userPINRegister.isBlank())
+                    binding.tilUserPIN.error = "PIN is required!"
             } else if(usernameRegister == "admin") {
                 binding.tilUsernameRegister.error = "Username can't be admin!"
             } else {
                 coroutine.launch {
-                    val tempUser = db.userDao.checkUsername(usernameRegister)
+                    val tempUser = db.userDao.getFromUsername(usernameRegister)
 
                     if (tempUser != null) {
                         runOnUiThread {
@@ -69,32 +74,45 @@ class RegisterActivity : AppCompatActivity() {
                                 binding.tilPasswordConfirmationRegister.error = "Password confirmation must match Password!"
                             }
                         } else {
+                            var isAccountNumberUnique = false
+                            var tempAccountNumber: Long = 0
+
+                            while (!isAccountNumberUnique){
+                                isAccountNumberUnique = true
+                                tempAccountNumber = floor(Math.random() * 9000000000L).toLong() + 1000000000L
+
+                                for (user in db.userDao.getAllUsers()){
+                                    if(user.accountNumber == tempAccountNumber){
+                                        isAccountNumberUnique = false
+                                        break
+                                    }
+                                }
+                            }
+
                             val user = UserEntity(
                                 name = nameRegister,
-                                username = usernameRegister.lowercase(),
-                                password = passwordRegister
+                                username = usernameRegister,
+                                password = passwordRegister,
+                                accountNumber = tempAccountNumber,
+                                userPIN = userPINRegister.toInt()
                             )
                             db.userDao.insert(user)
 
                             val newWallet = WalletEntity(
-                                username_user = usernameRegister.lowercase(),
+                                username_user = usernameRegister,
                                 walletName = "Main wallet",
                                 walletBalance = 0,
                                 isMainWallet = true
                             )
                             db.walletDao.insert(newWallet)
 
-//                            newWallet = WalletEntity(
-//                                username_user = usernameRegister.lowercase(),
-//                                walletName = "Second wallet",
-//                                walletBalance = 100000,
-//                                isMainWallet = false
-//                            )
-//                            db.walletDao.insert(newWallet)
-
                             runOnUiThread {
                                 cleanInput()
-                                Toast.makeText(this@RegisterActivity, "Yayy! Your account has been successfully created!", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    this@RegisterActivity,
+                                    "Yayy! Your account has been successfully created!",
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                         }
                     }
@@ -112,6 +130,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.tilUsernameRegister.error = null
         binding.tilPasswordRegister.error = null
         binding.tilPasswordConfirmationRegister.error = null
+        binding.tilUserPIN.error = null
     }
 
     private fun cleanInput(){
@@ -119,5 +138,6 @@ class RegisterActivity : AppCompatActivity() {
         binding.etUsernameRegister.setText("")
         binding.etPasswordRegister.setText("")
         binding.etPasswordConfirmationRegister.setText("")
+        binding.etUserPIN.setText("")
     }
 }

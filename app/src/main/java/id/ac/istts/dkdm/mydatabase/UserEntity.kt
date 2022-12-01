@@ -9,5 +9,7 @@ data class UserEntity(
     var username: String,
     var password: String,
     var name:  String,
+    var accountNumber: Long,
+    var userPIN: Int,
     var isUserBanned: Boolean = false
 )

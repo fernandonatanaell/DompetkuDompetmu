@@ -37,12 +37,12 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/ivNotification"
+            android:id="@+id/ivLogout"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="6"
-            android:src="@drawable/ic_baseline_notifications_24" />
+            android:src="@drawable/ic_baseline_logout_24" />
 
     </LinearLayout>
 
@@ -118,7 +118,7 @@
             android:background="@color/myTertiaryContainerColor"
             android:text="TOP UP"
             android:textColor="#000000"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:iconGravity="textTop" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -130,7 +130,7 @@
             android:background="@color/myTertiaryContainerColor"
             android:text="WITHDRAW"
             android:textColor="#000000"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:iconGravity="top" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -141,7 +141,7 @@
             android:background="@color/myTertiaryContainerColor"
             android:text="ADD CHARITY"
             android:textColor="#000000"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:iconGravity="top" />
 
     </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
@@ -37,6 +38,8 @@ class UserHomepageFragment(
                 .commit()
         }
     }
+
+    var userLogout:(()-> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +81,7 @@ class UserHomepageFragment(
         }
 
         coroutine.launch {
-            val userLogin = db.userDao.checkUsername(usernameLogin)
+            val userLogin = db.userDao.getFromUsername(usernameLogin)
             requireActivity().runOnUiThread {
                 binding.tvUsernameHomepage.text = usernameLogin
                 binding.tvNameUserHomepage.text = userLogin!!.name
@@ -116,11 +119,20 @@ class UserHomepageFragment(
             }
         }
 
-        binding.ivNotification.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.mainFL, UserNotificationFragment(db, coroutine, usernameLogin))
-                .commit()
+        binding.ivLogout.setOnClickListener {
+            val alert = AlertDialog.Builder(view.context)
+            alert.setTitle("ALERT!")
+            alert.setMessage("Do you really want to log out?")
+
+            alert.setPositiveButton("Yes") { _, _ ->
+                userLogout?.invoke()
+            }
+
+            alert.setNegativeButton("No") { _, _ ->
+
+            }
+
+            alert.show()
         }
     }
 }

@@ -10,7 +10,8 @@ import androidx.room.RoomDatabase
     WalletEntity::class,
     HistoryEntity::class,
     CharityEntity::class,
-    NotificationEntity::class
+    NotificationEntity::class,
+    ContactEntity::class
 ], version=1)
 abstract class AppDatabase : RoomDatabase(){
     abstract val userDao: UserDao
@@ -18,6 +19,7 @@ abstract class AppDatabase : RoomDatabase(){
     abstract val historyDao: HistoryDao
     abstract val charityDao: CharityDao
     abstract val notificationDao: NotificationDao
+    abstract val contactDao: ContactDao
 
     companion object {
         private var _database: AppDatabase? = null
