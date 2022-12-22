@@ -1,3 +1,3 @@
 # DompetkuDompetmu
 
-Dompetku Dompetmu is a money management application created with Kotlin language. This app has features such as top up, withdrawal, and money transfer. It also has a donation feature between other users.
+DompetkuDompetmu adalah aplikasi untuk mengelola uang berbasis android. Aplikasi ini memiliki fitur-fitur seperti top up, penarikan uang, dan transfer. Di aplikasi ini juga terdapat fitur yang memungkinkan user untuk berdonasi antar pengguna lainnya.
