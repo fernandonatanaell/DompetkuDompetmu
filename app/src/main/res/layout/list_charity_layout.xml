@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wrapperCharity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="15dp"
@@ -81,13 +82,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTotalHeading" />
 
-    <Button
-        android:id="@+id/btnDonate"
+    <TextView
+        android:id="@+id/tvTotalDays"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Donate"
-        android:textSize="12sp"
+        android:layout_marginTop="1dp"
+        android:text="30 more days"
+        android:textColor="#000000"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pbCharity" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTotalHeading" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

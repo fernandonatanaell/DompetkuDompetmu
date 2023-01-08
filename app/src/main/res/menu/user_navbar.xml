@@ -18,13 +18,13 @@
         android:icon="@drawable/ic_baseline_arrow_circle_up_24"
         android:title="Transfer" />
     <item
-        android:id="@+id/menu_user_history"
-        android:checked="false"
-        android:icon="@drawable/ic_baseline_history_24"
-        android:title="History" />
-    <item
-        android:id="@+id/menu_user_notification"
+        android:id="@+id/menu_user_inbox"
         android:checked="false"
         android:icon="@drawable/ic_baseline_notifications_24"
-        android:title="Notification" />
+        android:title="Inbox" />
+    <item
+        android:id="@+id/menu_user_profile"
+        android:checked="false"
+        android:icon="@drawable/ic_baseline_account_circle_24"
+        android:title="Profile" />
 </menu>

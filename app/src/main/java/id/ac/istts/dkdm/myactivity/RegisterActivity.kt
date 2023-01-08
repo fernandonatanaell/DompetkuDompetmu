@@ -94,7 +94,8 @@ class RegisterActivity : AppCompatActivity() {
                                 username = usernameRegister,
                                 password = passwordRegister,
                                 accountNumber = tempAccountNumber,
-                                userPIN = userPINRegister.toInt()
+                                userPIN = userPINRegister.toInt(),
+                                deleted_at = null
                             )
                             db.userDao.insert(user)
 
@@ -102,7 +103,8 @@ class RegisterActivity : AppCompatActivity() {
                                 username_user = usernameRegister,
                                 walletName = "Main wallet",
                                 walletBalance = 0,
-                                isMainWallet = true
+                                isMainWallet = true,
+                                deleted_at = null
                             )
                             db.walletDao.insert(newWallet)
 

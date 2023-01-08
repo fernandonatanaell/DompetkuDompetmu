@@ -73,15 +73,29 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="tvfFundRaisedDonation"
             android:textColor="@color/mySecondaryColor"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.457"
+            app:layout_constraintEnd_toStartOf="@+id/tvTotalDaysLeft"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNameCharityDonation" />
+
+        <TextView
+            android:id="@+id/tvTotalDaysLeft"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1"
+            android:text="tvTotalDaysLeft"
+            android:textColor="#000000"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNameCharityDonation" />
 
         <TextView

@@ -108,7 +108,8 @@ class UserTransferActivity : AppCompatActivity() {
                                 id_wallet = selectedWallet.wallet_id,
                                 historyType = "Withdraw",
                                 historyDescription = transferDescription,
-                                historyAmount = transferAmount.toLong()
+                                historyAmount = transferAmount.toLong(),
+                                deleted_at = null
                             )
 
                             db.historyDao.insert(newHistory)
@@ -119,7 +120,8 @@ class UserTransferActivity : AppCompatActivity() {
 
                             var newNotifications = NotificationEntity(
                                 notification_text = "Your transfer of Rp ${transferAmount.toLong().toRupiah()} in ${selectedWallet.walletName} to ${selectedContact!!.username_friend} has been successful.",
-                                username_user = usernameLogin
+                                username_user = usernameLogin,
+                                deleted_at = null
                             )
                             db.notificationDao.insert(newNotifications)
 
@@ -133,14 +135,16 @@ class UserTransferActivity : AppCompatActivity() {
                                 id_wallet = selectedWallet.wallet_id,
                                 historyType = "Income",
                                 historyDescription = transferDescription,
-                                historyAmount = transferAmount.toLong()
+                                historyAmount = transferAmount.toLong(),
+                                deleted_at = null
                             )
 
                             db.historyDao.insert(newHistory)
 
                             newNotifications = NotificationEntity(
                                 notification_text = "You get Rp ${transferAmount.toLong().toRupiah()} to ${selectedWallet.walletName} from ${usernameLogin}.",
-                                username_user = selectedContact!!.username_friend
+                                username_user = selectedContact!!.username_friend,
+                                deleted_at = null
                             )
                             db.notificationDao.insert(newNotifications)
 

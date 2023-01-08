@@ -10,7 +10,8 @@ data class WalletEntity(
     var username_user: String,
     var walletName:  String,
     var walletBalance:  Long,
-    var isMainWallet: Boolean
+    var isMainWallet: Boolean,
+    var deleted_at: String?
 ){
     override fun toString(): String {
         return walletName

@@ -114,7 +114,8 @@ class UserTransactionActivity : AppCompatActivity() {
                                 id_wallet = selectedWallet.wallet_id,
                                 historyType = if (inWithdrawMode) "Withdraw" else "Income",
                                 historyDescription = transactionDescription,
-                                historyAmount = transactionAmount.toLong()
+                                historyAmount = transactionAmount.toLong(),
+                                deleted_at = null
                             )
 
                             db.historyDao.insert(newHistory)
@@ -126,14 +127,16 @@ class UserTransactionActivity : AppCompatActivity() {
 
                                 newNotifications = NotificationEntity(
                                     notification_text = "Your withdraw of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
-                                    username_user = usernameLogin
+                                    username_user = usernameLogin,
+                                    deleted_at = null
                                 )
                             } else {
                                 selectedWallet!!.walletBalance += newHistory.historyAmount
 
                                 newNotifications = NotificationEntity(
                                     notification_text = "Your top up of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
-                                    username_user = usernameLogin
+                                    username_user = usernameLogin,
+                                    deleted_at = null
                                 )
                             }
                             db.walletDao.update(selectedWallet)

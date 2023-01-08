@@ -1,27 +1,31 @@
-package id.ac.istts.dkdm.myfragment.user
+package id.ac.istts.dkdm.myactivity.user
 
+import android.app.Activity
+import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
-import id.ac.istts.dkdm.R
-import id.ac.istts.dkdm.databinding.FragmentUserHistoryBinding
+import id.ac.istts.dkdm.databinding.ActivityUserHistoryBinding
 import id.ac.istts.dkdm.myadapter.RVHistoryAdapter
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.HistoryEntity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class UserHistoryFragment(
-    private var db: AppDatabase,
-    private val coroutine: CoroutineScope,
-    private var usernameLogin: String
-) : Fragment() {
+@Suppress("DEPRECATION")
+class UserHistoryActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityUserHistoryBinding
+    private lateinit var db: AppDatabase
+    private val coroutine = CoroutineScope(Dispatchers.IO)
+
+    // USER ATTRIBUTE
+    private lateinit var usernameLogin: String
+
     private lateinit var listOfMyHistory: ArrayList<HistoryEntity>
     private lateinit var tempListOfMyHistory: ArrayList<HistoryEntity>
     private lateinit var adapterListOfMyWallet: RVHistoryAdapter
@@ -29,17 +33,22 @@ class UserHistoryFragment(
     private var selectedDate = "All"
     private var selectedType = "All"
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_history, container, false)
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentUserHistoryBinding.bind(view)
+        // TO HIDE STATUS BAR
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
+        // TO SET BINDING VIEW
+        binding = ActivityUserHistoryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        db = AppDatabase.build(this)
+
+        // RECEIVE DATA FROM TRANSFER ACTIVITY
+        usernameLogin = intent.getStringExtra("usernameLogin").toString()
 
         // SET VIEW
         coroutine.launch {
@@ -50,8 +59,8 @@ class UserHistoryFragment(
 
             adapterListOfMyWallet = RVHistoryAdapter(db, coroutine, tempListOfMyHistory)
 
-            requireActivity().runOnUiThread {
-                binding.rvUserHistory.layoutManager = LinearLayoutManager(view.context)
+            runOnUiThread {
+                binding.rvUserHistory.layoutManager = LinearLayoutManager(this@UserHistoryActivity)
                 binding.rvUserHistory.adapter = adapterListOfMyWallet
             }
 
@@ -71,8 +80,8 @@ class UserHistoryFragment(
                     listOfDate.add(history.historyDate)
             }
 
-            requireActivity().runOnUiThread {
-                val adp1: ArrayAdapter<String> = ArrayAdapter<String>(view.context, android.R.layout.simple_list_item_1, listOfDate)
+            runOnUiThread {
+                val adp1: ArrayAdapter<String> = ArrayAdapter<String>(this@UserHistoryActivity, android.R.layout.simple_list_item_1, listOfDate)
                 adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 (binding.etDateHistory as? AutoCompleteTextView)?.setAdapter(adp1)
                 binding.etDateHistory.setOnItemClickListener { adapterView, _, i, _ ->
@@ -81,7 +90,7 @@ class UserHistoryFragment(
                 }
                 binding.etDateHistory.setText(binding.etDateHistory.adapter.getItem(0).toString(), false)
 
-                val adp2: ArrayAdapter<String> = ArrayAdapter<String>(view.context, android.R.layout.simple_list_item_1, arrayListOf("All", "Withdraw", "Income"))
+                val adp2: ArrayAdapter<String> = ArrayAdapter<String>(this@UserHistoryActivity, android.R.layout.simple_list_item_1, arrayListOf("All", "Withdraw", "Income"))
                 adp2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 (binding.etTypeHistory as? AutoCompleteTextView)?.setAdapter(adp2)
                 binding.etTypeHistory.setOnItemClickListener { adapterView, _, i, _ ->
@@ -97,9 +106,15 @@ class UserHistoryFragment(
                     binding.tvTotalIncomeHistory.text = "Rp ${totalIncomeUser.toRupiah()},00"
             }
         }
+
+        binding.btnBackFromHistory.setOnClickListener {
+            val resultIntent = Intent()
+            setResult(Activity.RESULT_CANCELED, resultIntent)
+            finish()
+        }
     }
 
-    private fun filter(binding: FragmentUserHistoryBinding){
+    private fun filter(binding: ActivityUserHistoryBinding){
         coroutine.launch {
 
             var totalSpendingUser: Long = 0
@@ -116,7 +131,7 @@ class UserHistoryFragment(
                 }
 
                 if(selectedType != "All"){
-                    if(history.historyType != selectedType){
+                    if(history.historyDate != selectedType){
                         isSafe = false
                     }
                 }
@@ -130,7 +145,7 @@ class UserHistoryFragment(
                     tempListOfMyHistory.add(history)
                 }
             }
-            requireActivity().runOnUiThread {
+            runOnUiThread {
                 if(totalSpendingUser > 0)
                     binding.tvTotalSpendingHistory.text = "Rp ${totalSpendingUser.toRupiah()},00"
                 else

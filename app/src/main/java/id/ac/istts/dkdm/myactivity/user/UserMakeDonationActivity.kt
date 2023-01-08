@@ -16,6 +16,9 @@ import id.ac.istts.dkdm.mydatabase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Suppress("DEPRECATION")
 class UserMakeDonationActivity : AppCompatActivity() {
@@ -64,6 +67,23 @@ class UserMakeDonationActivity : AppCompatActivity() {
                 binding.tvDescCharityDonation.text = selectedCharity.charity_description
                 binding.tvfFundRaisedDonation.text = "Rp ${selectedCharity.fundsRaised.toRupiah()},00"
                 binding.tvfFundGoalDonation.text = SpannableStringBuilder().append("Raised from ").bold { append("Rp ${selectedCharity.fundsGoal.toRupiah()},00") }
+
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                val dateNow = sdf.parse(sdf.format(Date()))
+                val dateEnd = sdf.parse(selectedCharity.charity_end_date)
+                var diff: Long = (dateEnd.time - dateNow.time) / 1000 / 60
+
+                if(diff < 1440){
+                    if(diff < 60){
+                        binding.tvTotalDaysLeft.text = "$diff minutes to go"
+                    } else {
+                        diff /= 60
+                        binding.tvTotalDaysLeft.text = "$diff hours to go"
+                    }
+                } else {
+                    diff = diff / 60 / 24
+                    binding.tvTotalDaysLeft.text = "$diff days to go"
+                }
 
                 binding.pbDonation.max = selectedCharity.fundsGoal.toInt()
                 binding.pbDonation.progress = selectedCharity.fundsRaised.toInt()
@@ -126,14 +146,16 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 // USER WHO DONATED TO THE CHARITY
                                 var newNotifications = NotificationEntity(
                                     notification_text = "Your Rp ${amountDonation.toLong().toRupiah()} to '${selectedCharity.charity_name}' is successful donated.",
-                                    username_user = usernameLogin
+                                    username_user = usernameLogin,
+                                    deleted_at = null
                                 )
                                 db.notificationDao.insert(newNotifications)
                                 var newHistory = HistoryEntity(
                                     id_wallet = selectedWallet.wallet_id,
                                     historyType = "Withdraw",
                                     historyDescription = "Make a donation to '${selectedCharity.charity_name}'",
-                                    historyAmount = amountDonation.toLong()
+                                    historyAmount = amountDonation.toLong(),
+                                    deleted_at = null
                                 )
                                 db.historyDao.insert(newHistory)
 
@@ -146,14 +168,16 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 // OWNER CHARITY
                                 newNotifications = NotificationEntity(
                                     notification_text = "Your '${selectedCharity.charity_name}' have received a donation of Rp ${amountDonation.toLong().toRupiah()} from ${usernameLogin}.",
-                                    username_user = walletDonated.username_user
+                                    username_user = walletDonated.username_user,
+                                    deleted_at = null
                                 )
                                 db.notificationDao.insert(newNotifications)
                                 newHistory = HistoryEntity(
                                     id_wallet = selectedCharity.source_id_wallet,
                                     historyType = "Income",
                                     historyDescription = "Received a donation from $usernameLogin to '${selectedCharity.charity_name}'",
-                                    historyAmount = amountDonation.toLong()
+                                    historyAmount = amountDonation.toLong(),
+                                    deleted_at = null
                                 )
                                 db.historyDao.insert(newHistory)
 

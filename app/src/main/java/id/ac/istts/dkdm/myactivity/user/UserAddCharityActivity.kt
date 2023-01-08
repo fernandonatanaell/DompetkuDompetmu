@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.datepicker.MaterialDatePicker
 import id.ac.istts.dkdm.databinding.ActivityUserAddCharityBinding
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
@@ -14,6 +15,9 @@ import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Suppress("DEPRECATION")
 class UserAddCharityActivity : AppCompatActivity() {
@@ -24,6 +28,8 @@ class UserAddCharityActivity : AppCompatActivity() {
     // USER ATTRIBUTE
     private lateinit var usernameLogin: String
     private lateinit var selectedWallet: WalletEntity
+
+    private var tempCharityEndDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,14 +62,30 @@ class UserAddCharityActivity : AppCompatActivity() {
             }
         }
 
+        binding.etEndCharityDate.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker().build()
+            datePicker.show(supportFragmentManager, "DatePicker")
+
+            // Setting up the event for when ok is clicked
+            datePicker.addOnPositiveButtonClickListener {
+                // formatting date in dd-mm-yyyy format.
+                var dateFormatter = SimpleDateFormat("dd/MM/yyyy")
+                binding.etEndCharityDate.setText(dateFormatter.format(Date(it)))
+
+                dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                tempCharityEndDate = dateFormatter.format(Date(it))
+            }
+        }
+
         binding.btnSubmitCharity.setOnClickListener {
             val charityName = binding.etNewCharityName.text.toString()
             val charityDescription = binding.etNewCharityDescription.text.toString()
             val charityFundsGoal = binding.etNewCharityFundsGoal.text.toString()
             val userPIN = binding.etUserPINAddCharity.text.toString()
+            val charityEndDate = tempCharityEndDate
             resetErrorInput()
 
-            if(charityName.isBlank() || charityDescription.isBlank() || charityFundsGoal.isBlank() || userPIN.isBlank()){
+            if(charityName.isBlank() || charityDescription.isBlank() || charityFundsGoal.isBlank() || userPIN.isBlank() || charityEndDate.isBlank()){
                 if(charityName.isBlank())
                     binding.tilNewCharityName.error = "Charity name required!"
 
@@ -75,6 +97,9 @@ class UserAddCharityActivity : AppCompatActivity() {
 
                 if(userPIN.isBlank())
                     binding.tilUserPINAddCharity.error = "PIN required!"
+
+                if(charityEndDate.isBlank())
+                    binding.tilEndCharityDate.error = "End date required!"
             } else {
                 coroutine.launch {
                     val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
@@ -88,10 +113,21 @@ class UserAddCharityActivity : AppCompatActivity() {
                             ).show()
                         }
                     } else {
-                        if(charityFundsGoal.toLong() > 2000000000){
-                            binding.tilAddCharityFundsGoal.error = "Fund goal can't be greater than Rp. 2 billion!"
-                        } else if(charityFundsGoal.toInt() >= 10000) {
-                            coroutine.launch {
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val dateNow = sdf.parse(sdf.format(Date()))
+                        val dateEnd = sdf.parse(charityEndDate)
+                        val diffMinutes: Long = (dateEnd.time - dateNow.time) / 1000 / 60 / 60
+
+                        if (diffMinutes < 24) {
+                            runOnUiThread {
+                                binding.tilEndCharityDate.error = "End date must be 1 day earlier than current date"
+                            }
+                        } else {
+                            if(charityFundsGoal.toLong() > 2000000000){
+                                runOnUiThread {
+                                    binding.tilAddCharityFundsGoal.error = "Fund goal can't be greater than Rp. 2 billion!"
+                                }
+                            } else if(charityFundsGoal.toInt() >= 10000) {
                                 val getUser = db.userDao.getFromUsername(usernameLogin)
 
                                 if(getUser!!.isUserBanned){
@@ -106,11 +142,16 @@ class UserAddCharityActivity : AppCompatActivity() {
                                         alert.show()
                                     }
                                 } else {
+                                    val formatedDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+
                                     val newCharity = CharityEntity(
                                         charity_name = charityName,
                                         charity_description = charityDescription,
                                         source_id_wallet = selectedWallet.wallet_id,
-                                        fundsGoal = charityFundsGoal.toLong()
+                                        fundsGoal = charityFundsGoal.toLong(),
+                                        charity_start_date = formatedDateTime,
+                                        charity_end_date = charityEndDate,
+                                        deleted_at = null
                                     )
                                     db.charityDao.insert(newCharity)
 
@@ -124,9 +165,9 @@ class UserAddCharityActivity : AppCompatActivity() {
                                         finish()
                                     }
                                 }
+                            } else {
+                                binding.tilAddCharityFundsGoal.error = "Fund goal must be greater than or equal to Rp 10.000!"
                             }
-                        } else {
-                            binding.tilAddCharityFundsGoal.error = "Fund goal must be greater than or equal to Rp 10.000!"
                         }
                     }
                 }
@@ -143,5 +184,6 @@ class UserAddCharityActivity : AppCompatActivity() {
         binding.tilNewCharityDescription.error = null
         binding.tilAddCharityFundsGoal.error = null
         binding.tilUserPINAddCharity.error = null
+        binding.tilEndCharityDate.error = null
     }
 }

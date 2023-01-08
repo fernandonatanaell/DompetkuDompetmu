@@ -4,18 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".myfragment.user.UserHistoryFragment">
+    android:paddingVertical="24dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="18dp"
+    tools:context=".myactivity.user.UserHistoryActivity">
+
+    <Button
+        android:id="@+id/btnBackFromHistory"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-10dp"
+        app:cornerRadius="5dp"
+        app:icon="@drawable/ic_baseline_arrow_back_ios_new_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/myPrimaryColor"
+        app:strokeWidth="0dp" />
 
     <TextView
-        android:id="@+id/tvHeadingHistory"
-        android:layout_width="match_parent"
+        android:id="@+id/tvHeadingHistory2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="History"
         android:textColor="@color/mySecondaryColor"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnBackFromHistory"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -26,7 +41,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHeadingHistory">
+        app:layout_constraintTop_toBottomOf="@+id/tvHeadingHistory2">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilDateHistory"

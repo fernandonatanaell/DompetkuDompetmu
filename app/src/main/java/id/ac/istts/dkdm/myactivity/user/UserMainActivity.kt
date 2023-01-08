@@ -11,9 +11,9 @@ import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.ActivityUserMainBinding
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.myfragment.user.UserCharityFragment
-import id.ac.istts.dkdm.myfragment.user.UserHistoryFragment
 import id.ac.istts.dkdm.myfragment.user.UserHomepageFragment
 import id.ac.istts.dkdm.myfragment.user.UserNotificationFragment
+import id.ac.istts.dkdm.myfragment.user.UserProfileFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -68,10 +68,10 @@ class UserMainActivity : AppCompatActivity() {
                         putExtra("usernameLogin", usernameLogin)
                     })
                 }
-                R.id.menu_user_history ->{
-                    swapToFrag("History")
+                R.id.menu_user_inbox ->{
+                    swapToFrag("Inbox")
                 }
-                R.id.menu_user_notification ->{
+                R.id.menu_user_profile ->{
                     swapToFrag("Notification")
                 }
                 else ->{
@@ -88,27 +88,27 @@ class UserMainActivity : AppCompatActivity() {
             "Homepage" -> { // Homepage fragment
                 lastFragmentActive = "Homepage"
                 binding.mainNavbar.menu.getItem(0).isChecked = true
-                val tempUserHomepageFragment = UserHomepageFragment(db, coroutine, usernameLogin)
-                tempUserHomepageFragment.userLogout = {
-                    finish()
-                }
-
-                tempUserHomepageFragment
+                UserHomepageFragment(db, coroutine, usernameLogin)
             }
             "Charity" -> { // Charity fragment
                 lastFragmentActive = "Charity"
                 binding.mainNavbar.menu.getItem(1).isChecked = true
                 UserCharityFragment(db, coroutine, usernameLogin)
             }
-            "History" -> { // History fragment
-                lastFragmentActive = "History"
+            "Inbox" -> { // Inbox fragment
+                lastFragmentActive = "Inbox"
                 binding.mainNavbar.menu.getItem(3).isChecked = true
-                UserHistoryFragment(db, coroutine, usernameLogin)
-            }
-            else -> { // Notification fragment
-                lastFragmentActive = "Notification"
-                binding.mainNavbar.menu.getItem(4).isChecked = true
                 UserNotificationFragment(db, coroutine, usernameLogin)
+            }
+            else -> { // Profile fragment
+                lastFragmentActive = "Profile"
+                binding.mainNavbar.menu.getItem(4).isChecked = true
+                val tempUserProfileFragment = UserProfileFragment(db, coroutine, usernameLogin)
+                tempUserProfileFragment.userLogout = {
+                    finish()
+                }
+
+                tempUserProfileFragment
             }
         }
     }
@@ -122,7 +122,7 @@ class UserMainActivity : AppCompatActivity() {
         when (lastFragmentActive) {
             "Homepage" -> binding.mainNavbar.menu.getItem(0).isChecked = true
             "Charity" -> binding.mainNavbar.menu.getItem(1).isChecked = true
-            "History" -> binding.mainNavbar.menu.getItem(3).isChecked = true
+            "Inbox" -> binding.mainNavbar.menu.getItem(3).isChecked = true
             else -> binding.mainNavbar.menu.getItem(4).isChecked = true
         }
     }

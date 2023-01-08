@@ -33,6 +33,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         db = AppDatabase.build(this)
 
+        binding.etUsernameLogin.setText("windahbasudara")
+        binding.etPasswordLogin.setText("123")
+
         // SET VIEW
         resetErrorInput()
         binding.btnLogin.setOnClickListener {

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
@@ -16,12 +15,16 @@ import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentUserHomepageBinding
 import id.ac.istts.dkdm.myactivity.user.UserAddCharityActivity
 import id.ac.istts.dkdm.myactivity.user.UserAddWalletActivity
+import id.ac.istts.dkdm.myactivity.user.UserHistoryActivity
 import id.ac.istts.dkdm.myactivity.user.UserTransactionActivity
 import id.ac.istts.dkdm.myadapter.RVWalletAdapter
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class UserHomepageFragment(
     private var db: AppDatabase,
@@ -39,8 +42,6 @@ class UserHomepageFragment(
         }
     }
 
-    var userLogout:(()-> Unit)? = null
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +55,8 @@ class UserHomepageFragment(
         val binding = FragmentUserHomepageBinding.bind(view)
 
         // SET VIEW
+        binding.tvDateToday.text = SimpleDateFormat("EEEE\ndd MMM yyyy").format(Date())
+
         binding.ivAddNewWallet.setOnClickListener {
             refreshLauncher.launch(Intent(view.context, UserAddWalletActivity::class.java).apply {
                 putExtra("usernameLogin", usernameLogin)
@@ -76,6 +79,12 @@ class UserHomepageFragment(
 
         binding.btnToMyCharityHomepage.setOnClickListener {
             val intent = Intent(view.context, UserAddCharityActivity::class.java)
+            intent.putExtra("usernameLogin", usernameLogin)
+            startActivity(intent)
+        }
+
+        binding.btnToHistory.setOnClickListener {
+            val intent = Intent(view.context, UserHistoryActivity::class.java)
             intent.putExtra("usernameLogin", usernameLogin)
             startActivity(intent)
         }
@@ -117,22 +126,6 @@ class UserHomepageFragment(
                 }
                 binding.rvUserWallets.layoutManager = GridLayoutManager(view.context, 2)
             }
-        }
-
-        binding.ivLogout.setOnClickListener {
-            val alert = AlertDialog.Builder(view.context)
-            alert.setTitle("ALERT!")
-            alert.setMessage("Do you really want to log out?")
-
-            alert.setPositiveButton("Yes") { _, _ ->
-                userLogout?.invoke()
-            }
-
-            alert.setNegativeButton("No") { _, _ ->
-
-            }
-
-            alert.show()
         }
     }
 }

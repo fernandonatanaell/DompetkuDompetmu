@@ -79,7 +79,8 @@ class UserAddWalletActivity : AppCompatActivity() {
                                 username_user = usernameLogin,
                                 walletName = newWalletName,
                                 walletBalance = earlyBalanceWallet,
-                                isMainWallet = false
+                                isMainWallet = false,
+                                deleted_at = null
                             )
 
                             db.walletDao.insert(newWallet)

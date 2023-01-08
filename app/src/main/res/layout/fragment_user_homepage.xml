@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hello!"
                 android:textColor="@color/myPrimaryColor"
@@ -36,13 +36,16 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/ivLogout"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="6"
-            android:src="@drawable/ic_baseline_logout_24" />
+        <TextView
+            android:id="@+id/tvDateToday"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:gravity="center_vertical"
+            android:minWidth="100dp"
+            android:text="Sunday\n08 Jan 2023"
+            android:textColor="@color/myPrimaryColor"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -107,42 +110,108 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <LinearLayout
             android:id="@+id/btnToTopup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/myTertiaryContainerColor"
-            android:text="TOP UP"
-            android:textColor="#000000"
-            android:textSize="11sp"
-            app:iconGravity="textTop" />
+            android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatButton
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:src="@drawable/icon_topup" />
+
+            <TextView
+                android:id="@+id/tvToTopup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="7dp"
+                android:text="Topup"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btnToWithdraw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             android:layout_weight="1"
-            android:background="@color/myTertiaryContainerColor"
-            android:text="WITHDRAW"
-            android:textColor="#000000"
-            android:textSize="11sp"
-            app:iconGravity="top" />
+            android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatButton
+            <ImageView
+                android:id="@+id/ivToWithdraw"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:src="@drawable/icon_withdraw" />
+
+            <TextView
+                android:id="@+id/tvToWithdraw"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="7dp"
+                android:text="Withdraw"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btnToMyCharityHomepage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/myTertiaryContainerColor"
-            android:text="ADD CHARITY"
-            android:textColor="#000000"
-            android:textSize="11sp"
-            app:iconGravity="top" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivToAddCharity"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:src="@drawable/icon_charity" />
+
+            <TextView
+                android:id="@+id/etToAddCharity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="7dp"
+                android:text="Add Charity"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnToHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivToHistory"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:src="@drawable/icon_history" />
+
+            <TextView
+                android:id="@+id/tvToHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="7dp"
+                android:text="History"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -151,7 +220,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Available Wallets"
+        android:text="My Top Wallets"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold" />

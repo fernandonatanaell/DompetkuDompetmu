@@ -3,35 +3,57 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable-v24/customborder.xml" value="0.1515" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/background_charity.xml" value="0.1515" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/background_circle_icon.xml" value="0.1515" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/full_custom_border.xml" value="0.1515" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_add_card_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_add_circle_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_arrow_back_ios_new_24.xml" value="0.2555" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.2495" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_lock_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_logout_24.xml" value="0.2555" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_notifications_24.xml" value="0.2495" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_person_2_24.xml" value="0.2555" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_pin_24.xml" value="0.2495" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2495" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_short_text_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_volunteer_activism_24.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_baseline_volunteer_activism_24_admin.xml" value="0.2555" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2555" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_admin_main.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_add_charity.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_add_wallet.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_contact.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_edit_profile.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_history.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_main.xml" value="0.25" />
-        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_make_donation.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_make_donation.xml" value="0.4" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_search_charity.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_transaction.xml" value="0.264" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/activity_user_transfer.xml" value="0.2359375" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_admin_charity.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_admin_user.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_all_wallet.xml" value="0.2359375" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_charity.xml" value="0.264" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_donate.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_history.xml" value="0.25" />
-        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_homepage.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_homepage.xml" value="0.264" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_my_charity.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_notification.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_profile.xml" value="0.264" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/fragment_user_transfer.xml" value="0.25" />
-        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/list_charity_layout.xml" value="0.264" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/list_admin_charity_layout.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/list_admin_users_layout.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/list_charity_layout.xml" value="0.4" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/list_contact_layout.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/list_history_layout.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/notification_layout.xml" value="0.25" />
+        <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/layout/wallet_layout.xml" value="0.25" />
         <entry key="..\:/origin/KULIAH_NANDO/E5/Jumat/Mobile Device Programing/DompetkuDompetmu/app/src/main/res/menu/user_navbar.xml" value="0.25" />
       </map>
     </option>

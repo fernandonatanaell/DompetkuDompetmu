@@ -8,7 +8,8 @@ class ContactEntity (
     @PrimaryKey(autoGenerate = true)
     var contact_id: Int = 0,
     var username_user: String,
-    var username_friend: String
+    var username_friend: String,
+    var deleted_at: String?
 ) {
     override fun toString(): String {
         return username_friend

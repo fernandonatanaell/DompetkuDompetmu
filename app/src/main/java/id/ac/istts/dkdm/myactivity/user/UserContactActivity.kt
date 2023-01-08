@@ -103,7 +103,8 @@ class UserContactActivity : AppCompatActivity() {
                             } else {
                                 val newContact = ContactEntity (
                                     username_user = usernameLogin,
-                                    username_friend = getFriendUser.username
+                                    username_friend = getFriendUser.username,
+                                    deleted_at = null
                                 )
 
                                 db.contactDao.insert(newContact)

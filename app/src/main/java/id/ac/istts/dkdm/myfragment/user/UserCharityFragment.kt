@@ -2,8 +2,6 @@ package id.ac.istts.dkdm.myfragment.user
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentUserCharityBinding
 import id.ac.istts.dkdm.myactivity.user.UserMakeDonationActivity
+import id.ac.istts.dkdm.myactivity.user.UserSearchCharityActivity
 import id.ac.istts.dkdm.myadapter.RVCharityAdapter
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
@@ -53,7 +53,14 @@ class UserCharityFragment(
 
         // SET VIEW
         coroutine.launch {
-            loadCharity(view, db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+            // FOR YOU
+            loadCharity(view, binding.rvForYouCharity , db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+
+            // URGENT
+            loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+
+            // LATEST
+            loadCharity(view, binding.rvLatestCharity , db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
         }
 
         binding.btnToMyCharity.setOnClickListener {
@@ -66,35 +73,22 @@ class UserCharityFragment(
                 .commit()
         }
 
-        binding.etSearchCharity.addTextChangedListener (object: TextWatcher {
-
-            override fun afterTextChanged(s: Editable) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                coroutine.launch {
-                    if(s.toString().isBlank()){
-                        loadCharity(view, db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
-                    } else {
-                        loadCharity(view, db.charityDao.getAllCharityExceptThisUserFilter(usernameLogin, binding.etSearchCharity.text.toString()) as ArrayList<CharityEntity>)
-                    }
-                }
-            }
-        })
+        binding.etSearchCharity.setOnClickListener {
+            val intent = Intent(view.context, UserSearchCharityActivity::class.java)
+            intent.putExtra("usernameLogin", usernameLogin)
+            startActivity(intent)
+        }
     }
 
-    private fun loadCharity(view: View, listOfCharity: ArrayList<CharityEntity>){
+    private fun loadCharity(view: View, rv: RecyclerView , listOfCharity: ArrayList<CharityEntity>){
         requireActivity().runOnUiThread {
-            binding.rvAllCharity.adapter = RVCharityAdapter(listOfCharity, false){ selectedCharityId: Int ->
+            rv.adapter = RVCharityAdapter(listOfCharity, false){ selectedCharityId: Int ->
                 refreshLauncher.launch(Intent(view.context, UserMakeDonationActivity::class.java).apply {
                     putExtra("usernameLogin", usernameLogin)
                     putExtra("selectedCharityId", selectedCharityId)
                 })
             }
-            binding.rvAllCharity.layoutManager = LinearLayoutManager(view.context)
+            rv.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         }
     }
 }
