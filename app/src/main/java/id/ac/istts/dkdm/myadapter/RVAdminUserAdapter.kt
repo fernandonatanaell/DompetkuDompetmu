@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.mydatabase.AppDatabase
-import id.ac.istts.dkdm.mydatabase.NotificationEntity
 import id.ac.istts.dkdm.mydatabase.UserEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

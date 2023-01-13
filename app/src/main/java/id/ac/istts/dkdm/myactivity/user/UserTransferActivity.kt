@@ -105,11 +105,12 @@ class UserTransferActivity : AppCompatActivity() {
 
                             // FROM USER
                             var newHistory = HistoryEntity(
+                                history_id = -1,
                                 id_wallet = selectedWallet.wallet_id,
                                 historyType = "Withdraw",
                                 historyDescription = transferDescription,
                                 historyAmount = transferAmount.toLong(),
-                                deleted_at = null
+                                deleted_at = "null"
                             )
 
                             db.historyDao.insert(newHistory)
@@ -119,9 +120,10 @@ class UserTransferActivity : AppCompatActivity() {
                             db.walletDao.update(selectedWallet!!)
 
                             var newNotifications = NotificationEntity(
+                                notification_id = -1,
                                 notification_text = "Your transfer of Rp ${transferAmount.toLong().toRupiah()} in ${selectedWallet.walletName} to ${selectedContact!!.username_friend} has been successful.",
                                 username_user = usernameLogin,
-                                deleted_at = null
+                                deleted_at = "null"
                             )
                             db.notificationDao.insert(newNotifications)
 
@@ -132,19 +134,21 @@ class UserTransferActivity : AppCompatActivity() {
                             db.walletDao.update(selectedWallet!!)
 
                             newHistory = HistoryEntity(
+                                history_id = -1,
                                 id_wallet = selectedWallet.wallet_id,
                                 historyType = "Income",
                                 historyDescription = transferDescription,
                                 historyAmount = transferAmount.toLong(),
-                                deleted_at = null
+                                deleted_at = "null"
                             )
 
                             db.historyDao.insert(newHistory)
 
                             newNotifications = NotificationEntity(
+                                notification_id = -1,
                                 notification_text = "You get Rp ${transferAmount.toLong().toRupiah()} to ${selectedWallet.walletName} from ${usernameLogin}.",
                                 username_user = selectedContact!!.username_friend,
-                                deleted_at = null
+                                deleted_at = "null"
                             )
                             db.notificationDao.insert(newNotifications)
 

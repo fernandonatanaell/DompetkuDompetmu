@@ -12,5 +12,5 @@ data class UserEntity(
     var accountNumber: Long,
     var userPIN: Int,
     var isUserBanned: Boolean = false,
-    var deleted_at: String?
+    var deleted_at: String
 )

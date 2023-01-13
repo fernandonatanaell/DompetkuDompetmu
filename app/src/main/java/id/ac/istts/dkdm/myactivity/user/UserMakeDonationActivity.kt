@@ -2,6 +2,7 @@ package id.ac.istts.dkdm.myactivity.user
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -16,6 +17,7 @@ import id.ac.istts.dkdm.mydatabase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -67,6 +69,13 @@ class UserMakeDonationActivity : AppCompatActivity() {
                 binding.tvDescCharityDonation.text = selectedCharity.charity_description
                 binding.tvfFundRaisedDonation.text = "Rp ${selectedCharity.fundsRaised.toRupiah()},00"
                 binding.tvfFundGoalDonation.text = SpannableStringBuilder().append("Raised from ").bold { append("Rp ${selectedCharity.fundsGoal.toRupiah()},00") }
+
+                val directory = File(filesDir, "DompetkuDompetmu")
+                val file = File(directory, selectedCharity.imgPath)
+                if (file.exists()) {
+                    val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                    binding.ivCharityDonation.setImageBitmap(bitmap)
+                }
 
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val dateNow = sdf.parse(sdf.format(Date()))
@@ -145,17 +154,19 @@ class UserMakeDonationActivity : AppCompatActivity() {
 
                                 // USER WHO DONATED TO THE CHARITY
                                 var newNotifications = NotificationEntity(
+                                    notification_id = -1,
                                     notification_text = "Your Rp ${amountDonation.toLong().toRupiah()} to '${selectedCharity.charity_name}' is successful donated.",
                                     username_user = usernameLogin,
-                                    deleted_at = null
+                                    deleted_at = "null"
                                 )
                                 db.notificationDao.insert(newNotifications)
                                 var newHistory = HistoryEntity(
+                                    history_id = -1,
                                     id_wallet = selectedWallet.wallet_id,
                                     historyType = "Withdraw",
                                     historyDescription = "Make a donation to '${selectedCharity.charity_name}'",
                                     historyAmount = amountDonation.toLong(),
-                                    deleted_at = null
+                                    deleted_at = "null"
                                 )
                                 db.historyDao.insert(newHistory)
 
@@ -167,17 +178,19 @@ class UserMakeDonationActivity : AppCompatActivity() {
 
                                 // OWNER CHARITY
                                 newNotifications = NotificationEntity(
+                                    notification_id = -1,
                                     notification_text = "Your '${selectedCharity.charity_name}' have received a donation of Rp ${amountDonation.toLong().toRupiah()} from ${usernameLogin}.",
                                     username_user = walletDonated.username_user,
-                                    deleted_at = null
+                                    deleted_at = "null"
                                 )
                                 db.notificationDao.insert(newNotifications)
                                 newHistory = HistoryEntity(
+                                    history_id = -1,
                                     id_wallet = selectedCharity.source_id_wallet,
                                     historyType = "Income",
                                     historyDescription = "Received a donation from $usernameLogin to '${selectedCharity.charity_name}'",
                                     historyAmount = amountDonation.toLong(),
-                                    deleted_at = null
+                                    deleted_at = "null"
                                 )
                                 db.historyDao.insert(newHistory)
 

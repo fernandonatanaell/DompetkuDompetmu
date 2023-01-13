@@ -5,11 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "contacts")
 class ContactEntity (
-    @PrimaryKey(autoGenerate = true)
-    var contact_id: Int = 0,
+    @PrimaryKey
+    var contact_id: Int,
     var username_user: String,
     var username_friend: String,
-    var deleted_at: String?
+    var deleted_at: String
 ) {
     override fun toString(): String {
         return username_friend

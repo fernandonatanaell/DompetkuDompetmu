@@ -13,13 +13,13 @@ interface WalletDao {
     @Delete
     suspend fun delete(wallet: WalletEntity)
 
-    @Query("SELECT * FROM wallets WHERE username_user = :username ORDER BY walletBalance desc LIMIT 4 OFFSET 0")
+    @Query("SELECT * FROM wallets WHERE username_user = :username AND deleted_at == \"null\" ORDER BY walletBalance desc LIMIT 4 OFFSET 0")
     suspend fun getTop4(username: String): List<WalletEntity>
 
-    @Query("SELECT * FROM wallets WHERE username_user = :username")
+    @Query("SELECT * FROM wallets WHERE username_user = :username AND deleted_at == \"null\"")
     suspend fun getAllMyWallet(username: String): List<WalletEntity>
 
-    @Query("SELECT * FROM wallets WHERE wallet_id = :wallet_id")
+    @Query("SELECT * FROM wallets WHERE wallet_id = :wallet_id AND deleted_at == \"null\"")
     suspend fun get(wallet_id: Int): WalletEntity?
 
     @Query("SELECT * FROM wallets WHERE username_user = :username AND isMainWallet = 1")

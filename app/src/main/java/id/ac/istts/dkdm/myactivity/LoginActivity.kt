@@ -1,10 +1,14 @@
 package id.ac.istts.dkdm.myactivity
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import id.ac.istts.dkdm.databinding.ActivityLoginBinding
 import id.ac.istts.dkdm.myactivity.admin.AdminMainActivity
 import id.ac.istts.dkdm.myactivity.user.UserMainActivity
@@ -82,6 +86,42 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnToRegister.setOnClickListener {
             startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+        }
+
+        permissionToRead()
+        permissionToWrite()
+    }
+
+    private fun permissionToRead() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                1001)
+        }
+    }
+
+    private fun permissionToWrite() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                1002
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1001 -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    // Permission denied
+                    finishAffinity()
+                }
+                return
+            }
         }
     }
 

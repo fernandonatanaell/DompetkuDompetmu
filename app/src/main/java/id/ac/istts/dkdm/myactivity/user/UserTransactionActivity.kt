@@ -111,11 +111,12 @@ class UserTransactionActivity : AppCompatActivity() {
 
                         if(isBalanceWalletEnough){
                             val newHistory = HistoryEntity(
+                                history_id = -1,
                                 id_wallet = selectedWallet.wallet_id,
                                 historyType = if (inWithdrawMode) "Withdraw" else "Income",
                                 historyDescription = transactionDescription,
                                 historyAmount = transactionAmount.toLong(),
-                                deleted_at = null
+                                deleted_at = "null"
                             )
 
                             db.historyDao.insert(newHistory)
@@ -126,17 +127,19 @@ class UserTransactionActivity : AppCompatActivity() {
                                 selectedWallet!!.walletBalance -= newHistory.historyAmount
 
                                 newNotifications = NotificationEntity(
+                                    notification_id = -1,
                                     notification_text = "Your withdraw of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
                                     username_user = usernameLogin,
-                                    deleted_at = null
+                                    deleted_at = "null"
                                 )
                             } else {
                                 selectedWallet!!.walletBalance += newHistory.historyAmount
 
                                 newNotifications = NotificationEntity(
+                                    notification_id = -1,
                                     notification_text = "Your top up of Rp ${transactionAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} is successful.",
                                     username_user = usernameLogin,
-                                    deleted_at = null
+                                    deleted_at = "null"
                                 )
                             }
                             db.walletDao.update(selectedWallet)

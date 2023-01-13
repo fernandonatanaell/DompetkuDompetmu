@@ -13,6 +13,6 @@ interface NotificationDao {
     @Update
     suspend fun update(notification: NotificationEntity)
 
-    @Query("SELECT * FROM notifications WHERE username_user = :username ORDER BY notification_id DESC")
+    @Query("SELECT * FROM notifications WHERE username_user = :username AND deleted_at == \"null\" ORDER BY notification_id DESC")
     suspend fun getAllNotifications(username: String): List<NotificationEntity>
 }

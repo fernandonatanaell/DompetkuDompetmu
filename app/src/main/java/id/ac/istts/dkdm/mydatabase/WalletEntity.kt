@@ -5,13 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "wallets")
 data class WalletEntity(
-    @PrimaryKey (autoGenerate = true)
-    var wallet_id: Int = 0,
+    @PrimaryKey
+    var wallet_id: Int,
     var username_user: String,
     var walletName:  String,
     var walletBalance:  Long,
     var isMainWallet: Boolean,
-    var deleted_at: String?
+    var deleted_at: String
 ){
     override fun toString(): String {
         return walletName

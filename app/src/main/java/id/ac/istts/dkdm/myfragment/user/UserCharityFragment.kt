@@ -55,12 +55,12 @@ class UserCharityFragment(
         // SET VIEW
         coroutine.launch {
             // FOR YOU
-            var Arr = db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>
-            var tempArr = ArrayList<CharityEntity>()
-            Arr.shuffle()
+            val arr = db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>
+            val tempArr = ArrayList<CharityEntity>()
+            arr.shuffle()
             for(k in 0..9) {
-                if(k < Arr.size) {
-                    tempArr.add(Arr[k])
+                if(k < arr.size) {
+                    tempArr.add(arr[k])
                 }
             }
             loadCharity(view, binding.rvForYouCharity , tempArr)
@@ -71,13 +71,10 @@ class UserCharityFragment(
 
             // LATEST
             val currentLatest = LocalDate.now().toString()
-            loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityLatest(usernameLogin, currentLatest) as ArrayList<CharityEntity>)
+            loadCharity(view, binding.rvLatestCharity , db.charityDao.getAllCharityLatest(usernameLogin, currentLatest) as ArrayList<CharityEntity>)
         }
 
         binding.btnToMyCharity.setOnClickListener {
-//            val getImageFromGalleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-//            startActivity(getImageFromGalleryIntent)
-
             parentFragmentManager
                 .beginTransaction()
                 .replace(R.id.mainFL, UserMyCharityFragment(db, coroutine, usernameLogin))

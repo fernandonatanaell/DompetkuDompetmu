@@ -13,9 +13,9 @@ interface HistoryDao {
     @Delete
     suspend fun delete(history: HistoryEntity)
 
-    @Query("SELECT * FROM histories AS h JOIN wallets AS w ON h.id_wallet = w.wallet_id JOIN users AS u ON w.username_user = u.username WHERE u.username = :username ORDER BY h.history_id DESC")
+    @Query("SELECT * FROM histories AS h JOIN wallets AS w ON h.id_wallet = w.wallet_id JOIN users AS u ON w.username_user = u.username WHERE u.username = :username AND w.deleted_at == \"null\" ORDER BY h.history_id DESC")
     suspend fun getAllMyHistory(username: String): List<HistoryEntity>
 
-    @Query("SELECT * FROM histories where history_id = :history_id")
+    @Query("SELECT * FROM histories where history_id = :history_id AND deleted_at == \"null\"")
     suspend fun get(history_id: Int): HistoryEntity?
 }

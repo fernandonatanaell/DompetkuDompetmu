@@ -95,16 +95,17 @@ class RegisterActivity : AppCompatActivity() {
                                 password = passwordRegister,
                                 accountNumber = tempAccountNumber,
                                 userPIN = userPINRegister.toInt(),
-                                deleted_at = null
+                                deleted_at = "null"
                             )
                             db.userDao.insert(user)
 
                             val newWallet = WalletEntity(
+                                wallet_id = -1,
                                 username_user = usernameRegister,
                                 walletName = "Main wallet",
                                 walletBalance = 0,
                                 isMainWallet = true,
-                                deleted_at = null
+                                deleted_at = "null"
                             )
                             db.walletDao.insert(newWallet)
 

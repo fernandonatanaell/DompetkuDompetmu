@@ -47,9 +47,10 @@ class RVAdminCharityAdapter(
 
                     val ownerUsername = db.walletDao.get(item.source_id_wallet)!!.username_user
                     val newNotification = NotificationEntity(
+                        notification_id = -1,
                         notification_text = "Your charity '${item.charity_name}' has been unbanned by Admin!",
                         username_user = ownerUsername,
-                        deleted_at = null
+                        deleted_at = "null"
                     )
                     db.notificationDao.insert(newNotification)
                 }
@@ -64,9 +65,10 @@ class RVAdminCharityAdapter(
 
                     val ownerUsername = db.walletDao.get(item.source_id_wallet)!!.username_user
                     val newNotification = NotificationEntity(
+                        notification_id = -1,
                         notification_text = "Your charity '${item.charity_name}' has been banned by Admin!",
                         username_user = ownerUsername,
-                        deleted_at = null
+                        deleted_at = "null"
                     )
                     db.notificationDao.insert(newNotification)
                 }

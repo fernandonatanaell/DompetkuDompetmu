@@ -76,11 +76,12 @@ class UserAddWalletActivity : AppCompatActivity() {
                             }
                         } else {
                             val newWallet = WalletEntity(
+                                wallet_id = -1,
                                 username_user = usernameLogin,
                                 walletName = newWalletName,
                                 walletBalance = earlyBalanceWallet,
                                 isMainWallet = false,
-                                deleted_at = null
+                                deleted_at = "null"
                             )
 
                             db.walletDao.insert(newWallet)

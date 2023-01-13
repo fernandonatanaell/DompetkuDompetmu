@@ -1,11 +1,17 @@
 package id.ac.istts.dkdm.myactivity.user
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.WindowManager
+import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import id.ac.istts.dkdm.databinding.ActivityUserAddCharityBinding
@@ -15,6 +21,8 @@ import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -29,7 +37,19 @@ class UserAddCharityActivity : AppCompatActivity() {
     private lateinit var usernameLogin: String
     private lateinit var selectedWallet: WalletEntity
 
+    private var selectedImage: Uri? = null
     private var tempCharityEndDate: String = ""
+
+    private val uploadImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            result: ActivityResult ->
+        if(result.resultCode == RESULT_OK){
+            val data = result.data
+
+            // Save the selected image to a global variable
+            selectedImage = data?.data
+            binding.tvNamePicture.text = getFileName(selectedImage!!)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +105,7 @@ class UserAddCharityActivity : AppCompatActivity() {
             val charityEndDate = tempCharityEndDate
             resetErrorInput()
 
-            if(charityName.isBlank() || charityDescription.isBlank() || charityFundsGoal.isBlank() || userPIN.isBlank() || charityEndDate.isBlank()){
+            if(charityName.isBlank() || charityDescription.isBlank() || charityFundsGoal.isBlank() || userPIN.isBlank() || charityEndDate.isBlank() || selectedImage == null){
                 if(charityName.isBlank())
                     binding.tilNewCharityName.error = "Charity name required!"
 
@@ -100,6 +120,9 @@ class UserAddCharityActivity : AppCompatActivity() {
 
                 if(charityEndDate.isBlank())
                     binding.tilEndCharityDate.error = "End date required!"
+                
+                if(selectedImage == null)
+                    Toast.makeText(this, "Please select an image first!", Toast.LENGTH_SHORT).show()
             } else {
                 coroutine.launch {
                     val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
@@ -143,15 +166,34 @@ class UserAddCharityActivity : AppCompatActivity() {
                                     }
                                 } else {
                                     val formatedDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+                                    val imgName = "${System.currentTimeMillis()}.${MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(selectedImage!!))}"
+
+                                    runOnUiThread {
+                                        val directory = File(filesDir, "DompetkuDompetmu")
+                                        if (!directory.exists()) {
+                                            directory.mkdirs()
+                                        }
+                                        val file = File(directory, imgName)
+                                        val inputStream = contentResolver.openInputStream(selectedImage!!)
+                                        val outputStream = FileOutputStream(file)
+                                        inputStream?.use { input ->
+                                            outputStream.use { output ->
+                                                input.copyTo(output)
+                                            }
+                                        }
+                                        Toast.makeText( this@UserAddCharityActivity, "Image saved to $file", Toast.LENGTH_SHORT).show()
+                                    }
 
                                     val newCharity = CharityEntity(
+                                        charity_id = -1,
                                         charity_name = charityName,
                                         charity_description = charityDescription,
                                         source_id_wallet = selectedWallet.wallet_id,
                                         fundsGoal = charityFundsGoal.toLong(),
                                         charity_start_date = formatedDateTime,
                                         charity_end_date = charityEndDate,
-                                        deleted_at = null
+                                        imgPath = imgName,
+                                        deleted_at = "null"
                                     )
                                     db.charityDao.insert(newCharity)
 
@@ -174,9 +216,19 @@ class UserAddCharityActivity : AppCompatActivity() {
             }
         }
 
+        binding.btnSelectImage.setOnClickListener {
+            openGallery()
+        }
+
         binding.btnBackFromAddCharity.setOnClickListener {
             finish()
         }
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        uploadImageLauncher.launch(intent)
     }
 
     private fun resetErrorInput(){
@@ -185,5 +237,30 @@ class UserAddCharityActivity : AppCompatActivity() {
         binding.tilAddCharityFundsGoal.error = null
         binding.tilUserPINAddCharity.error = null
         binding.tilEndCharityDate.error = null
+    }
+
+    private fun getFileName(uri: Uri): String {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    val columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (columnIndex != -1) {
+                        result = cursor.getString(columnIndex)
+                    }
+                }
+            } finally {
+                cursor?.close()
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result!!.lastIndexOf('/')
+            if (cut != -1) {
+                result = result.substring(cut + 1)
+            }
+        }
+        return result
     }
 }

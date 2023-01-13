@@ -137,7 +137,8 @@
             android:layout_gravity="bottom"
             android:layout_weight="1"
             android:gravity="right"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingRight="5dp">
 
             <TextView
                 android:id="@+id/textView5"

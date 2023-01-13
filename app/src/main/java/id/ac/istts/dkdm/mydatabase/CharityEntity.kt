@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "charities")
 class CharityEntity (
-    @PrimaryKey(autoGenerate = true)
-    var charity_id: Int = 0,
+    @PrimaryKey
+    var charity_id: Int,
     var charity_name: String,
     var charity_description: String,
     var source_id_wallet: Int,
@@ -16,7 +16,7 @@ class CharityEntity (
     var charity_end_date: String,
     var isCharityIsOver: Boolean = false,
     var isCharityBanned: Boolean = false,
-    var imgPath: String = "",
-    var deleted_at: String?
+    var imgPath: String,
+    var deleted_at: String
 )
 

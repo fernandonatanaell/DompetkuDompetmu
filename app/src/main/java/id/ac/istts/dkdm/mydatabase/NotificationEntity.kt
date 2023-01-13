@@ -10,11 +10,11 @@ import java.util.*
 
 @Entity(tableName = "notifications")
 data class NotificationEntity (
-    @PrimaryKey(autoGenerate = true)
-    var notification_id: Int = 0,
+    @PrimaryKey
+    var notification_id: Int,
     var notification_text: String,
     var username_user: String,
     @SuppressLint("SimpleDateFormat") var notification_date: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()),
     var userAlreadySee: Boolean = false,
-    var deleted_at: String?
+    var deleted_at: String
 )
