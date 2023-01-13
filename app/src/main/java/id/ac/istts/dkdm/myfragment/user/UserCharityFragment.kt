@@ -20,6 +20,7 @@ import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class UserCharityFragment(
     private var db: AppDatabase,
@@ -54,13 +55,23 @@ class UserCharityFragment(
         // SET VIEW
         coroutine.launch {
             // FOR YOU
-            loadCharity(view, binding.rvForYouCharity , db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+            var Arr = db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>
+            var tempArr = ArrayList<CharityEntity>()
+            Arr.shuffle()
+            for(k in 0..9) {
+                if(k < Arr.size) {
+                    tempArr.add(Arr[k])
+                }
+            }
+            loadCharity(view, binding.rvForYouCharity , tempArr)
 
             // URGENT
-            loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+            val current = LocalDate.now().toString()
+            loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityUrgent(usernameLogin, current) as ArrayList<CharityEntity>)
 
             // LATEST
-            loadCharity(view, binding.rvLatestCharity , db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>)
+            val currentLatest = LocalDate.now().toString()
+            loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityLatest(usernameLogin, currentLatest) as ArrayList<CharityEntity>)
         }
 
         binding.btnToMyCharity.setOnClickListener {

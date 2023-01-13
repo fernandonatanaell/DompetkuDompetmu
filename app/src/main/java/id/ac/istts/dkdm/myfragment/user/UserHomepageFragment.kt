@@ -39,6 +39,7 @@ class UserHomepageFragment(
                 .beginTransaction()
                 .replace(R.id.mainFL, UserHomepageFragment(db, coroutine, usernameLogin))
                 .commit()
+
         }
     }
 
@@ -96,8 +97,10 @@ class UserHomepageFragment(
                 binding.tvNameUserHomepage.text = userLogin!!.name
             }
 
-            val tempAllMyWallets = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
+            val tempAllMyWallets = db.walletDao.getTop4(usernameLogin) as ArrayList<WalletEntity>
             var totalBalanceUser: Long = 0
+
+
             for (wallet in tempAllMyWallets){
                 totalBalanceUser += wallet.walletBalance
             }

@@ -13,6 +13,9 @@ interface WalletDao {
     @Delete
     suspend fun delete(wallet: WalletEntity)
 
+    @Query("SELECT * FROM wallets WHERE username_user = :username ORDER BY walletBalance desc LIMIT 4 OFFSET 0")
+    suspend fun getTop4(username: String): List<WalletEntity>
+
     @Query("SELECT * FROM wallets WHERE username_user = :username")
     suspend fun getAllMyWallet(username: String): List<WalletEntity>
 
