@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
 import id.ac.istts.dkdm.databinding.ActivityUserTransactionBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.HistoryEntity
 import id.ac.istts.dkdm.mydatabase.NotificationEntity
@@ -51,6 +52,8 @@ class UserTransactionActivity : AppCompatActivity() {
             changeMode("Top up")
         }
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
+
+        APIConnection.getWallets(this, db)
 
         // SET VIEW
         coroutine.launch {
@@ -119,7 +122,10 @@ class UserTransactionActivity : AppCompatActivity() {
                                 deleted_at = "null"
                             )
 
-                            db.historyDao.insert(newHistory)
+                            runOnUiThread {
+                                APIConnection.insertHistory(this@UserTransactionActivity, db, newHistory)
+                            }
+
                             val newNotifications: NotificationEntity
 
                             val selectedWallet = db.walletDao.get(newHistory.id_wallet)
@@ -142,19 +148,22 @@ class UserTransactionActivity : AppCompatActivity() {
                                     deleted_at = "null"
                                 )
                             }
-                            db.walletDao.update(selectedWallet)
-                            db.notificationDao.insert(newNotifications)
 
                             runOnUiThread {
-                                Toast.makeText(
-                                    this@UserTransactionActivity,
-                                    "Yayy! Transaction succeeded!",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                APIConnection.updateWallet(this@UserTransactionActivity, db, selectedWallet)
+                                val success = APIConnection.insertNotification(this@UserTransactionActivity, db, newNotifications)
 
-                                val resultIntent = Intent()
-                                setResult(Activity.RESULT_OK, resultIntent)
-                                finish()
+                                if(success){
+                                    Toast.makeText(
+                                        this@UserTransactionActivity,
+                                        "Yayy! Transaction succeeded!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    val resultIntent = Intent()
+                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    finish()
+                                }
                             }
                         } else {
                             runOnUiThread {

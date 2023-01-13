@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
 import id.ac.istts.dkdm.databinding.ActivitySplashBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 
 @Suppress("DEPRECATION")
 class SplashActivity : AppCompatActivity() {
@@ -14,6 +15,35 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPref = this.getSharedPreferences("id.ac.istts.dkdm.myactivity", MODE_PRIVATE)
+
+        if (!sharedPref.contains("users")){
+            sharedPref.edit().putString("users", "").apply()
+        }
+
+        if (!sharedPref.contains("wallets")){
+            sharedPref.edit().putString("wallets", "").apply()
+        }
+
+        if (!sharedPref.contains("notifications")){
+            sharedPref.edit().putString("notifications", "").apply()
+        }
+
+        if (!sharedPref.contains("histories")){
+            sharedPref.edit().putString("histories", "").apply()
+        }
+
+        if (!sharedPref.contains("contacts")){
+            sharedPref.edit().putString("contacts", "").apply()
+        }
+
+        if (!sharedPref.contains("charities")){
+            sharedPref.edit().putString("charities", "").apply()
+        }
+
+        sharedPref.edit().putString("status", "offline").apply()
+
 
         // TO HIDE STATUS BAR
         window.setFlags(

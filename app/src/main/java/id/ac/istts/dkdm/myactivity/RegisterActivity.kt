@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityRegisterBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.UserEntity
 import id.ac.istts.dkdm.mydatabase.WalletEntity
@@ -97,7 +98,11 @@ class RegisterActivity : AppCompatActivity() {
                                 userPIN = userPINRegister.toInt(),
                                 deleted_at = "null"
                             )
-                            db.userDao.insert(user)
+
+                            runOnUiThread {
+                                APIConnection.insertUser(this@RegisterActivity, db, user)
+                            }
+
 
                             val newWallet = WalletEntity(
                                 wallet_id = -1,
@@ -107,15 +112,15 @@ class RegisterActivity : AppCompatActivity() {
                                 isMainWallet = true,
                                 deleted_at = "null"
                             )
-                            db.walletDao.insert(newWallet)
 
                             runOnUiThread {
+                                val success = APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
+
+                                if(success){
+                                    Toast.makeText(this@RegisterActivity, "Yayy! Your account has been successfully created!", Toast.LENGTH_LONG).show()
+                                }
+
                                 cleanInput()
-                                Toast.makeText(
-                                    this@RegisterActivity,
-                                    "Yayy! Your account has been successfully created!",
-                                    Toast.LENGTH_LONG
-                                ).show()
                             }
                         }
                     }

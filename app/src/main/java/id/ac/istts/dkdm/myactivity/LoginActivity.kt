@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import id.ac.istts.dkdm.databinding.ActivityLoginBinding
 import id.ac.istts.dkdm.myactivity.admin.AdminMainActivity
 import id.ac.istts.dkdm.myactivity.user.UserMainActivity
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,8 @@ class LoginActivity : AppCompatActivity() {
 
         binding.etUsernameLogin.setText("windahbasudara")
         binding.etPasswordLogin.setText("123")
+
+        APIConnection.getUsers(this, db)
 
         // SET VIEW
         resetErrorInput()

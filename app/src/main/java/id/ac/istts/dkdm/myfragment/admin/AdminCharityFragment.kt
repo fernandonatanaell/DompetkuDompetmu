@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentAdminCharityBinding
 import id.ac.istts.dkdm.myadapter.RVAdminCharityAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +32,8 @@ class AdminCharityFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAdminCharityBinding.bind(view)
+
+        APIConnection.getCharities(view.context, db)
 
         // SET VIEW
         coroutine.launch {

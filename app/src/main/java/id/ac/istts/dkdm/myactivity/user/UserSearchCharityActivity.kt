@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.databinding.ActivityUserSearchCharityBinding
 import id.ac.istts.dkdm.myadapter.RVCharityAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +38,8 @@ class UserSearchCharityActivity : AppCompatActivity() {
         binding = ActivityUserSearchCharityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = AppDatabase.build(this)
+
+        APIConnection.getCharities(this, db)
 
         // RECEIVE DATA
         usernameLogin = intent.getStringExtra("usernameLogin").toString()

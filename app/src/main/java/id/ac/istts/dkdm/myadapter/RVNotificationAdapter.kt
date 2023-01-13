@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import id.ac.istts.dkdm.R
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.NotificationEntity
 import kotlinx.coroutines.CoroutineScope
@@ -36,9 +37,7 @@ class RVNotificationAdapter(
             holder.wrapperNotification.setBackgroundColor(Color.parseColor("#DEECFC"))
 
             item.userAlreadySee = true
-            coroutine.launch {
-                db.notificationDao.update(item)
-            }
+            APIConnection.updateNotification(holder.itemView.context, db, item)
         }
     }
 

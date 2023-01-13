@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import id.ac.istts.dkdm.R
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.UserEntity
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,8 @@ class RVAdminUserAdapter(
             if(item.isUserBanned){
                 coroutine.launch {
                     item.isUserBanned = false
-                    db.userDao.update(item)
+
+                    APIConnection.updateUser(it.context, db, item)
                 }
                 holder.toggleUsers.setBackgroundColor(Color.parseColor("#ba1a1a"))
                 holder.toggleUsers.text = "BAN"
@@ -50,7 +52,8 @@ class RVAdminUserAdapter(
             } else {
                 coroutine.launch {
                     item.isUserBanned = true
-                    db.userDao.update(item)
+
+                    APIConnection.updateUser(it.context, db, item)
                 }
                 holder.toggleUsers.setBackgroundColor(Color.GREEN)
                 holder.toggleUsers.text = "UNBAN"

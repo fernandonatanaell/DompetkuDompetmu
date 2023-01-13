@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentUserAllWalletBinding
 import id.ac.istts.dkdm.myadapter.RVWalletAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +33,8 @@ class UserAllWalletFragment(
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentUserAllWalletBinding.bind(view)
 
+        APIConnection.getWallets(view.context, db)
+
         // SET VIEW
         coroutine.launch {
             val tempAllMyWallets = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
@@ -42,10 +45,11 @@ class UserAllWalletFragment(
                             // UPDATE TO MAIN WALLET
                             val getMainWallet = db.walletDao.getMainWallet(usernameLogin)
                             getMainWallet!!.walletBalance += selectedWallet.walletBalance
-                            db.walletDao.update(getMainWallet!!)
 
-                            // DELETE SELECTED WALLET
-                            db.walletDao.delete(db.walletDao.get(selectedWallet.wallet_id)!!)
+                            requireActivity().runOnUiThread {
+                                APIConnection.updateWallet(view.context, db, getMainWallet!!)
+                                APIConnection.deleteWallet(view.context, db, selectedWallet.wallet_id)
+                            }
 
                             // HABIS DI DELETE REFRESH PAGENYA SUPAYA RECYCLE VIEW E JUGA KE UPDATE
                             requireActivity().runOnUiThread {

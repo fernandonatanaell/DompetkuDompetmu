@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.datepicker.MaterialDatePicker
 import id.ac.istts.dkdm.databinding.ActivityUserAddCharityBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import id.ac.istts.dkdm.mydatabase.WalletEntity
@@ -65,6 +66,8 @@ class UserAddCharityActivity : AppCompatActivity() {
         setContentView(binding.root)
         db = AppDatabase.build(this)
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
+
+        APIConnection.getWallets(this, db)
 
         // SET VIEW
         coroutine.launch {
@@ -168,22 +171,6 @@ class UserAddCharityActivity : AppCompatActivity() {
                                     val formatedDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
                                     val imgName = "${System.currentTimeMillis()}.${MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(selectedImage!!))}"
 
-                                    runOnUiThread {
-                                        val directory = File(filesDir, "DompetkuDompetmu")
-                                        if (!directory.exists()) {
-                                            directory.mkdirs()
-                                        }
-                                        val file = File(directory, imgName)
-                                        val inputStream = contentResolver.openInputStream(selectedImage!!)
-                                        val outputStream = FileOutputStream(file)
-                                        inputStream?.use { input ->
-                                            outputStream.use { output ->
-                                                input.copyTo(output)
-                                            }
-                                        }
-                                        Toast.makeText( this@UserAddCharityActivity, "Image saved to $file", Toast.LENGTH_SHORT).show()
-                                    }
-
                                     val newCharity = CharityEntity(
                                         charity_id = -1,
                                         charity_name = charityName,
@@ -195,16 +182,18 @@ class UserAddCharityActivity : AppCompatActivity() {
                                         imgPath = imgName,
                                         deleted_at = "null"
                                     )
-                                    db.charityDao.insert(newCharity)
 
                                     runOnUiThread {
-                                        Toast.makeText(
-                                            this@UserAddCharityActivity,
-                                            "Yayy! A new charity was successfully added!",
-                                            Toast.LENGTH_LONG
-                                        ).show()
+                                        val success = APIConnection.insertCharity(this@UserAddCharityActivity, db, newCharity, selectedImage!!)
 
-                                        finish()
+                                        if (success){
+                                            Toast.makeText(
+                                                this@UserAddCharityActivity,
+                                                "Yayy! A new charity was successfully added!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                            finish()
+                                        }
                                     }
                                 }
                             } else {

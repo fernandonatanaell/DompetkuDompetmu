@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentAdminUserBinding
 import id.ac.istts.dkdm.myadapter.RVAdminUserAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.UserEntity
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +32,8 @@ class AdminUserFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentAdminUserBinding.bind(view)
+
+        APIConnection.getUsers(view.context, db)
 
         // SET VIEW
         coroutine.launch {

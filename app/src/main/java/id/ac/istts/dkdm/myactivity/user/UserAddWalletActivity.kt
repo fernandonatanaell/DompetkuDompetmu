@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityUserAddWalletBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
@@ -84,17 +85,21 @@ class UserAddWalletActivity : AppCompatActivity() {
                                 deleted_at = "null"
                             )
 
-                            db.walletDao.insert(newWallet)
                             runOnUiThread {
-                                Toast.makeText(
-                                    this@UserAddWalletActivity,
-                                    "Yayy! Successfully added new wallet!",
-                                    Toast.LENGTH_LONG
-                                ).show()
 
-                                val resultIntent = Intent()
-                                setResult(Activity.RESULT_OK, resultIntent)
-                                finish()
+                                val success = APIConnection.insertWallet(this@UserAddWalletActivity, db, newWallet)
+
+                                if (success){
+                                    Toast.makeText(
+                                        this@UserAddWalletActivity,
+                                        "Yayy! Successfully added new wallet!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    val resultIntent = Intent()
+                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    finish()
+                                }
                             }
                         }
                     }

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.databinding.ActivityUserContactBinding
 import id.ac.istts.dkdm.myadapter.RVContactAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.ContactEntity
 import kotlinx.coroutines.CoroutineScope
@@ -38,6 +39,9 @@ class UserContactActivity : AppCompatActivity() {
         binding = ActivityUserContactBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = AppDatabase.build(this)
+
+        APIConnection.getUsers(this, db)
+        APIConnection.getContacts(this, db)
 
         // RECEIVE DATA FROM TRANSFER ACTIVITY
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
@@ -108,18 +112,20 @@ class UserContactActivity : AppCompatActivity() {
                                     deleted_at = "null"
                                 )
 
-                                db.contactDao.insert(newContact)
-
                                 runOnUiThread {
-                                    Toast.makeText(
-                                        this@UserContactActivity,
-                                        "Yayy! Contact successfully added!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val success = APIConnection.insertContact(this@UserContactActivity, db, newContact)
 
-                                    binding.etFriendAccountNumber.setText("")
-                                    binding.etUserPINContact.setText("")
-                                    initRV()
+                                    if (success){
+                                        Toast.makeText(
+                                            this@UserContactActivity,
+                                            "Yayy! Contact successfully added!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        binding.etFriendAccountNumber.setText("")
+                                        binding.etUserPINContact.setText("")
+                                        initRV()
+                                    }
                                 }
                             }
                         }
@@ -143,16 +149,18 @@ class UserContactActivity : AppCompatActivity() {
                     val getContact = db.contactDao.getContact(contact_id)
                     val nameDeletedUser =  db.userDao.getFromUsername(getContact!!.username_friend)!!.name
 
-                    db.contactDao.delete(getContact)
-
                     runOnUiThread {
-                        Toast.makeText(
-                            this@UserContactActivity,
-                            "Yayy! $nameDeletedUser was successfully removed from your contacts!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        val success = APIConnection.deleteContact(this@UserContactActivity, db, contact_id)
 
-                        initRV()
+                        if (success){
+                            Toast.makeText(
+                                this@UserContactActivity,
+                                "Yayy! $nameDeletedUser was successfully removed from your contacts!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            initRV()
+                        }
                     }
                 }
             }

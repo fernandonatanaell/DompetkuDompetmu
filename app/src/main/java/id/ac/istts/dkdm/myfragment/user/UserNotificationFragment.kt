@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentUserNotificationBinding
 import id.ac.istts.dkdm.myadapter.RVNotificationAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.NotificationEntity
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +33,8 @@ class UserNotificationFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUserNotificationBinding.bind(view)
+
+        APIConnection.getNotifications(view.context, db)
 
         // SET VIEW
         coroutine.launch {

@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.core.text.bold
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
 import id.ac.istts.dkdm.databinding.ActivityUserMakeDonationBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +47,8 @@ class UserMakeDonationActivity : AppCompatActivity() {
         binding = ActivityUserMakeDonationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = AppDatabase.build(this)
+
+        APIConnection.getWallets(this, db)
 
         // RECEIVE DATA
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
@@ -145,12 +148,18 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 if(selectedCharity.fundsRaised == selectedCharity.fundsGoal){
                                     selectedCharity.isCharityIsOver = true
                                 }
-                                db.charityDao.update(selectedCharity)
+
+                                runOnUiThread {
+                                    APIConnection.updateCharity(this@UserMakeDonationActivity, db, selectedCharity)
+                                }
 
 
                                 // UPDATE WALLET BALANCE USER WHO DONATE
                                 selectedWallet.walletBalance -= amountDonation.toLong()
-                                db.walletDao.update(selectedWallet)
+
+                                runOnUiThread {
+                                    APIConnection.updateWallet(this@UserMakeDonationActivity, db, selectedWallet)
+                                }
 
                                 // USER WHO DONATED TO THE CHARITY
                                 var newNotifications = NotificationEntity(
@@ -159,7 +168,11 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                     username_user = usernameLogin,
                                     deleted_at = "null"
                                 )
-                                db.notificationDao.insert(newNotifications)
+
+                                runOnUiThread {
+                                    APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
+                                }
+
                                 var newHistory = HistoryEntity(
                                     history_id = -1,
                                     id_wallet = selectedWallet.wallet_id,
@@ -168,22 +181,32 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                     historyAmount = amountDonation.toLong(),
                                     deleted_at = "null"
                                 )
-                                db.historyDao.insert(newHistory)
+
+                                runOnUiThread {
+                                    APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
+                                }
 
 
                                 // UPDATE WALLET BALANCE USER WHO RECEIVED DONATED
                                 val walletDonated = db.walletDao.get(selectedCharity.source_id_wallet)
                                 walletDonated!!.walletBalance += amountDonation.toLong()
-                                db.walletDao.update(walletDonated!!)
+
+                                runOnUiThread {
+                                    APIConnection.updateWallet(this@UserMakeDonationActivity, db, walletDonated!!)
+                                }
 
                                 // OWNER CHARITY
                                 newNotifications = NotificationEntity(
                                     notification_id = -1,
                                     notification_text = "Your '${selectedCharity.charity_name}' have received a donation of Rp ${amountDonation.toLong().toRupiah()} from ${usernameLogin}.",
-                                    username_user = walletDonated.username_user,
+                                    username_user = walletDonated!!.username_user,
                                     deleted_at = "null"
                                 )
-                                db.notificationDao.insert(newNotifications)
+
+                                runOnUiThread {
+                                    APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
+                                }
+
                                 newHistory = HistoryEntity(
                                     history_id = -1,
                                     id_wallet = selectedCharity.source_id_wallet,
@@ -192,18 +215,21 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                     historyAmount = amountDonation.toLong(),
                                     deleted_at = "null"
                                 )
-                                db.historyDao.insert(newHistory)
 
                                 runOnUiThread {
-                                    Toast.makeText(
-                                        this@UserMakeDonationActivity,
-                                        "Yayy! Successfully donated!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val success = APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
 
-                                    val resultIntent = Intent()
-                                    setResult(Activity.RESULT_OK, resultIntent)
-                                    finish()
+                                    if (success){
+                                        Toast.makeText(
+                                            this@UserMakeDonationActivity,
+                                            "Yayy! Successfully donated!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+
+                                        val resultIntent = Intent()
+                                        setResult(Activity.RESULT_OK, resultIntent)
+                                        finish()
+                                    }
                                 }
                             }
                         }

@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
 import id.ac.istts.dkdm.databinding.ActivityUserTransferBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,6 +50,9 @@ class UserTransferActivity : AppCompatActivity() {
         binding = ActivityUserTransferBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = AppDatabase.build(this)
+
+        APIConnection.getContacts(this, db)
+        APIConnection.getWallets(this, db)
 
         // RECEIVE DATA usernameLogin
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
@@ -113,36 +117,49 @@ class UserTransferActivity : AppCompatActivity() {
                                 deleted_at = "null"
                             )
 
-                            db.historyDao.insert(newHistory)
+                            runOnUiThread {
+                                APIConnection.insertHistory(this@UserTransferActivity, db, newHistory)
+                            }
 
                             var selectedWallet = db.walletDao.get(newHistory.id_wallet)
                             selectedWallet!!.walletBalance -= newHistory.historyAmount
-                            db.walletDao.update(selectedWallet!!)
+
+                            runOnUiThread {
+                                APIConnection.updateWallet(this@UserTransferActivity, db, selectedWallet!!)
+                            }
 
                             var newNotifications = NotificationEntity(
                                 notification_id = -1,
-                                notification_text = "Your transfer of Rp ${transferAmount.toLong().toRupiah()} in ${selectedWallet.walletName} to ${selectedContact!!.username_friend} has been successful.",
+                                notification_text = "Your transfer of Rp ${transferAmount.toLong().toRupiah()} in ${selectedWallet!!.walletName} to ${selectedContact!!.username_friend} has been successful.",
                                 username_user = usernameLogin,
                                 deleted_at = "null"
                             )
-                            db.notificationDao.insert(newNotifications)
+
+                            runOnUiThread {
+                                APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
+                            }
 
 
                             // TO USER
                             selectedWallet = db.walletDao.getMainWallet(selectedContact!!.username_friend)
                             selectedWallet!!.walletBalance += transferAmount.toLong()
-                            db.walletDao.update(selectedWallet!!)
+
+                            runOnUiThread {
+                                APIConnection.updateWallet(this@UserTransferActivity, db, selectedWallet!!)
+                            }
 
                             newHistory = HistoryEntity(
                                 history_id = -1,
-                                id_wallet = selectedWallet.wallet_id,
+                                id_wallet = selectedWallet!!.wallet_id,
                                 historyType = "Income",
                                 historyDescription = transferDescription,
                                 historyAmount = transferAmount.toLong(),
                                 deleted_at = "null"
                             )
 
-                            db.historyDao.insert(newHistory)
+                            runOnUiThread {
+                                APIConnection.insertHistory(this@UserTransferActivity, db, newHistory)
+                            }
 
                             newNotifications = NotificationEntity(
                                 notification_id = -1,
@@ -150,21 +167,23 @@ class UserTransferActivity : AppCompatActivity() {
                                 username_user = selectedContact!!.username_friend,
                                 deleted_at = "null"
                             )
-                            db.notificationDao.insert(newNotifications)
 
-
-                            // MESSAGE SUCCES TRANSFER
                             runOnUiThread {
-                                Toast.makeText(
-                                    this@UserTransferActivity,
-                                    "Yayy! Transfer succeeded!",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                val success = APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
 
-                                val resultIntent = Intent()
-                                setResult(Activity.RESULT_OK, resultIntent)
-                                finish()
+                                if (success){
+                                    Toast.makeText(
+                                        this@UserTransferActivity,
+                                        "Yayy! Transfer succeeded!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    val resultIntent = Intent()
+                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    finish()
+                                }
                             }
+
                         } else {
                             runOnUiThread {
                                 Toast.makeText(

@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import id.ac.istts.dkdm.R
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import id.ac.istts.dkdm.mydatabase.NotificationEntity
@@ -43,7 +44,8 @@ class RVAdminCharityAdapter(
             if(item.isCharityBanned){
                 coroutine.launch {
                     item.isCharityBanned = false
-                    db.charityDao.update(item)
+
+                    APIConnection.updateCharity(it.context, db, item)
 
                     val ownerUsername = db.walletDao.get(item.source_id_wallet)!!.username_user
                     val newNotification = NotificationEntity(
@@ -52,7 +54,8 @@ class RVAdminCharityAdapter(
                         username_user = ownerUsername,
                         deleted_at = "null"
                     )
-                    db.notificationDao.insert(newNotification)
+
+                    APIConnection.insertNotification(it.context, db, newNotification)
                 }
 
                 holder.toggleCharity.setBackgroundColor(Color.parseColor("#ba1a1a"))
@@ -61,7 +64,8 @@ class RVAdminCharityAdapter(
             } else {
                 coroutine.launch {
                     item.isCharityBanned = true
-                    db.charityDao.update(item)
+
+                    APIConnection.updateCharity(it.context, db, item)
 
                     val ownerUsername = db.walletDao.get(item.source_id_wallet)!!.username_user
                     val newNotification = NotificationEntity(
@@ -70,7 +74,8 @@ class RVAdminCharityAdapter(
                         username_user = ownerUsername,
                         deleted_at = "null"
                     )
-                    db.notificationDao.insert(newNotification)
+
+                    APIConnection.insertNotification(it.context, db, newNotification)
                 }
 
                 holder.toggleCharity.setBackgroundColor(Color.GREEN)

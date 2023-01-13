@@ -18,6 +18,7 @@ import id.ac.istts.dkdm.myactivity.user.UserAddWalletActivity
 import id.ac.istts.dkdm.myactivity.user.UserHistoryActivity
 import id.ac.istts.dkdm.myactivity.user.UserTransactionActivity
 import id.ac.istts.dkdm.myadapter.RVWalletAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,8 @@ class UserHomepageFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentUserHomepageBinding.bind(view)
+
+        APIConnection.getWallets(view.context, db)
 
         // SET VIEW
         binding.tvDateToday.text = SimpleDateFormat("EEEE\ndd MMM yyyy").format(Date())

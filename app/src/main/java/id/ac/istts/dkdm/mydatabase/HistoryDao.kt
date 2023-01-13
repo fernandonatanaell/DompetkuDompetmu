@@ -17,5 +17,5 @@ interface HistoryDao {
     suspend fun getAllMyHistory(username: String): List<HistoryEntity>
 
     @Query("SELECT * FROM histories where history_id = :history_id AND deleted_at == \"null\"")
-    suspend fun get(history_id: Int): HistoryEntity?
+    suspend fun getHistory(history_id: Int): HistoryEntity?
 }

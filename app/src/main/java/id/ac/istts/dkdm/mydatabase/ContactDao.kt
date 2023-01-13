@@ -7,6 +7,9 @@ interface ContactDao {
     @Insert
     suspend fun insert(contact: ContactEntity)
 
+    @Update
+    suspend fun update(contact: ContactEntity)
+
     @Delete
     suspend fun delete(contact: ContactEntity)
 

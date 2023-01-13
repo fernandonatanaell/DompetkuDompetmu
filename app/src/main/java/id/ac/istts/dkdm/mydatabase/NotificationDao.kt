@@ -15,4 +15,7 @@ interface NotificationDao {
 
     @Query("SELECT * FROM notifications WHERE username_user = :username AND deleted_at == \"null\" ORDER BY notification_id DESC")
     suspend fun getAllNotifications(username: String): List<NotificationEntity>
+
+    @Query("SELECT * FROM notifications WHERE notification_id = :id")
+    suspend fun get(id: Int): NotificationEntity?
 }

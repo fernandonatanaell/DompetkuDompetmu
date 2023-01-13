@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
 import id.ac.istts.dkdm.databinding.ActivityUserHistoryBinding
 import id.ac.istts.dkdm.myadapter.RVHistoryAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.HistoryEntity
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +47,8 @@ class UserHistoryActivity : AppCompatActivity() {
         binding = ActivityUserHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = AppDatabase.build(this)
+
+        APIConnection.getHistories(this, db)
 
         // RECEIVE DATA FROM TRANSFER ACTIVITY
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
