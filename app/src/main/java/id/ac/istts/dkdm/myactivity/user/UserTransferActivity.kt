@@ -169,19 +169,10 @@ class UserTransferActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
-                                val success = APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
-
-                                if (success){
-                                    Toast.makeText(
-                                        this@UserTransferActivity,
-                                        "Yayy! Transfer succeeded!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    val resultIntent = Intent()
-                                    setResult(Activity.RESULT_OK, resultIntent)
-                                    finish()
-                                }
+                                APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
+                                val resultIntent = Intent()
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
                             }
 
                         } else {

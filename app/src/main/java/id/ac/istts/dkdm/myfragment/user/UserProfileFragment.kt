@@ -6,7 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import id.ac.istts.dkdm.R
 import id.ac.istts.dkdm.databinding.FragmentUserProfileBinding
 import id.ac.istts.dkdm.myactivity.user.UserEditProfileActivity
@@ -20,6 +23,15 @@ class UserProfileFragment(
     private var usernameLogin: String
 ) : Fragment() {
     var userLogout:(()-> Unit)? = null
+    private lateinit var binding: FragmentUserProfileBinding
+
+    private val refreshLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            result: ActivityResult ->
+        if(result.resultCode == AppCompatActivity.RESULT_OK){
+            // REFRESH NAME USER
+            showNameUser()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,21 +43,15 @@ class UserProfileFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val binding = FragmentUserProfileBinding.bind(view)
+        binding = FragmentUserProfileBinding.bind(view)
 
         // SET VIEW
-        coroutine.launch {
-            val nameUser = db.userDao.getFromUsername(usernameLogin)!!.name
-            requireActivity().runOnUiThread {
-                binding.tvProfileName.text = nameUser
-                binding.tvProfileUsername.text = usernameLogin
-            }
-        }
+        showNameUser()
 
         binding.tvToEditPage.setOnClickListener {
-            val intent = Intent(view.context, UserEditProfileActivity()::class.java)
-            intent.putExtra("usernameLogin", usernameLogin)
-            startActivity(intent)
+            refreshLauncher.launch(Intent(view.context, UserEditProfileActivity::class.java).apply {
+                putExtra("usernameLogin", usernameLogin)
+            })
         }
 
         binding.clList1.setOnClickListener {
@@ -76,6 +82,16 @@ class UserProfileFragment(
             }
 
             alert.show()
+        }
+    }
+
+    private fun showNameUser(){
+        coroutine.launch {
+            val nameUser = db.userDao.getFromUsername(usernameLogin)!!.name
+            requireActivity().runOnUiThread {
+                binding.tvProfileName.text = nameUser
+                binding.tvProfileUsername.text = usernameLogin
+            }
         }
     }
 }

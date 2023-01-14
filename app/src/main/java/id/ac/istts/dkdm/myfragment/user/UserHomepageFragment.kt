@@ -98,18 +98,20 @@ class UserHomepageFragment(
             requireActivity().runOnUiThread {
                 binding.tvUsernameHomepage.text = usernameLogin
                 binding.tvNameUserHomepage.text = userLogin!!.name
+                binding.tvNorekUserHomepage.text = userLogin!!.accountNumber.toString()
             }
 
-            val tempAllMyWallets = db.walletDao.getTop4(usernameLogin) as ArrayList<WalletEntity>
+            val tempMyTopFourWallet = db.walletDao.getTop4(usernameLogin) as ArrayList<WalletEntity>
+            val tempAllMyWallet = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
             var totalBalanceUser: Long = 0
 
-
-            for (wallet in tempAllMyWallets){
+            for (wallet in tempAllMyWallet){
                 totalBalanceUser += wallet.walletBalance
             }
+
             requireActivity().runOnUiThread {
                 binding.tvTotalAssetHomepage.text = "Rp ${totalBalanceUser.toRupiah()},00"
-                binding.rvUserWallets.adapter = RVWalletAdapter(view.context, usernameLogin, tempAllMyWallets){ nameAction: String, usernameLogin: String, selectedWallet: WalletEntity ->
+                binding.rvUserWallets.adapter = RVWalletAdapter(view.context, usernameLogin, tempMyTopFourWallet){ nameAction: String, usernameLogin: String, selectedWallet: WalletEntity ->
                     if(nameAction == "delete"){
                         coroutine.launch {
                             // UPDATE TO MAIN WALLET

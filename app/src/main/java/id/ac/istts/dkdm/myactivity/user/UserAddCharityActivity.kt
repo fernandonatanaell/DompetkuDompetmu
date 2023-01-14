@@ -171,6 +171,22 @@ class UserAddCharityActivity : AppCompatActivity() {
                                     val formatedDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
                                     val imgName = "${System.currentTimeMillis()}.${MimeTypeMap.getSingleton().getExtensionFromMimeType(contentResolver.getType(selectedImage!!))}"
 
+                                    runOnUiThread {
+                                        val directory = File(filesDir, "DompetkuDompetmu")
+                                        if (!directory.exists()) {
+                                            directory.mkdirs()
+                                        }
+                                        val file = File(directory, imgName)
+                                        val inputStream = contentResolver.openInputStream(selectedImage!!)
+                                        val outputStream = FileOutputStream(file)
+                                        inputStream?.use { input ->
+                                            outputStream.use { output ->
+                                                input.copyTo(output)
+                                            }
+                                        }
+                                        // Toast.makeText( this@UserAddCharityActivity, "Image saved to $file", Toast.LENGTH_SHORT).show()
+                                    }
+
                                     val newCharity = CharityEntity(
                                         charity_id = -1,
                                         charity_name = charityName,
@@ -184,16 +200,8 @@ class UserAddCharityActivity : AppCompatActivity() {
                                     )
 
                                     runOnUiThread {
-                                        val success = APIConnection.insertCharity(this@UserAddCharityActivity, db, newCharity, selectedImage!!)
-
-                                        if (success){
-                                            Toast.makeText(
-                                                this@UserAddCharityActivity,
-                                                "Yayy! A new charity was successfully added!",
-                                                Toast.LENGTH_LONG
-                                            ).show()
-                                            finish()
-                                        }
+                                        APIConnection.insertCharity(this@UserAddCharityActivity, db, newCharity, selectedImage!!)
+                                        finish()
                                     }
                                 }
                             } else {

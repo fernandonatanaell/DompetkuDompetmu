@@ -86,20 +86,10 @@ class UserAddWalletActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
-
-                                val success = APIConnection.insertWallet(this@UserAddWalletActivity, db, newWallet)
-
-                                if (success){
-                                    Toast.makeText(
-                                        this@UserAddWalletActivity,
-                                        "Yayy! Successfully added new wallet!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    val resultIntent = Intent()
-                                    setResult(Activity.RESULT_OK, resultIntent)
-                                    finish()
-                                }
+                                APIConnection.insertWallet(this@UserAddWalletActivity, db, newWallet)
+                                val resultIntent = Intent()
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
                             }
                         }
                     }

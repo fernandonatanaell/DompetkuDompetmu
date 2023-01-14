@@ -151,19 +151,10 @@ class UserTransactionActivity : AppCompatActivity() {
 
                             runOnUiThread {
                                 APIConnection.updateWallet(this@UserTransactionActivity, db, selectedWallet)
-                                val success = APIConnection.insertNotification(this@UserTransactionActivity, db, newNotifications)
-
-                                if(success){
-                                    Toast.makeText(
-                                        this@UserTransactionActivity,
-                                        "Yayy! Transaction succeeded!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    val resultIntent = Intent()
-                                    setResult(Activity.RESULT_OK, resultIntent)
-                                    finish()
-                                }
+                                APIConnection.insertNotification(this@UserTransactionActivity, db, newNotifications)
+                                val resultIntent = Intent()
+                                setResult(Activity.RESULT_OK, resultIntent)
+                                finish()
                             }
                         } else {
                             runOnUiThread {

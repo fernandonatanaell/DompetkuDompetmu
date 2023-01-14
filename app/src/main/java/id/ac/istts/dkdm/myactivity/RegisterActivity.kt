@@ -114,12 +114,7 @@ class RegisterActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
-                                val success = APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
-
-                                if(success){
-                                    Toast.makeText(this@RegisterActivity, "Yayy! Your account has been successfully created!", Toast.LENGTH_LONG).show()
-                                }
-
+                                APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
                                 cleanInput()
                             }
                         }

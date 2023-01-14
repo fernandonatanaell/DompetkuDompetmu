@@ -39,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
         db = AppDatabase.build(this)
 
         binding.etUsernameLogin.setText("windahbasudara")
-        binding.etPasswordLogin.setText("123")
+        binding.etPasswordLogin.setText("bocilkematian")
 
         APIConnection.getUsers(this, db)
 

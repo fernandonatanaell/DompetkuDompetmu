@@ -217,19 +217,10 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 )
 
                                 runOnUiThread {
-                                    val success = APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
-
-                                    if (success){
-                                        Toast.makeText(
-                                            this@UserMakeDonationActivity,
-                                            "Yayy! Successfully donated!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        val resultIntent = Intent()
-                                        setResult(Activity.RESULT_OK, resultIntent)
-                                        finish()
-                                    }
+                                    APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
+                                    val resultIntent = Intent()
+                                    setResult(Activity.RESULT_OK, resultIntent)
+                                    finish()
                                 }
                             }
                         }

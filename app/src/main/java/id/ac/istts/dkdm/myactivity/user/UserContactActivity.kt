@@ -113,19 +113,10 @@ class UserContactActivity : AppCompatActivity() {
                                 )
 
                                 runOnUiThread {
-                                    val success = APIConnection.insertContact(this@UserContactActivity, db, newContact)
-
-                                    if (success){
-                                        Toast.makeText(
-                                            this@UserContactActivity,
-                                            "Yayy! Contact successfully added!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-
-                                        binding.etFriendAccountNumber.setText("")
-                                        binding.etUserPINContact.setText("")
-                                        initRV()
-                                    }
+                                    APIConnection.insertContact(this@UserContactActivity, db, newContact)
+                                    binding.etFriendAccountNumber.setText("")
+                                    binding.etUserPINContact.setText("")
+                                    initRV()
                                 }
                             }
                         }

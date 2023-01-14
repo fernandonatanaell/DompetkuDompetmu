@@ -1,8 +1,11 @@
 package id.ac.istts.dkdm.myactivity.user
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityUserEditProfileBinding
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +51,39 @@ class UserEditProfileActivity : AppCompatActivity() {
         }
 
         binding.btnToUpdateProfile.setOnClickListener {
+            val newNameUser = binding.etNameUser.text.toString()
+            resetErrorInput()
 
+            if(newNameUser.isBlank()){
+                binding.tilNameUser.error = "Name required!"
+            } else {
+                coroutine.launch {
+                    val newPasswordUser = binding.etNewPasswordUser.text.toString()
+                    val newConfirmPasswordUser = binding.etConfirmNewPasswordUser.text.toString()
+                    val getCurrentUser = db.userDao.getFromUsername(usernameLogin)
+
+                    getCurrentUser!!.name = newNameUser
+                    if(newPasswordUser.isNotBlank()) {
+                        if(newPasswordUser != newConfirmPasswordUser) {
+                            runOnUiThread {
+                                binding.tilConfirmNewPasswordUser.error = "Password confirmation must match Password!"
+                            }
+                            return@launch
+                        }
+
+                        getCurrentUser.password = newPasswordUser
+                    }
+
+                    db.userDao.update(getCurrentUser)
+                    runOnUiThread {
+                        Toast.makeText(this@UserEditProfileActivity, "Yayy! Your account has been successfully updated!", Toast.LENGTH_LONG).show()
+                    }
+
+                    val resultIntent = Intent()
+                    setResult(Activity.RESULT_OK, resultIntent)
+                    finish()
+                }
+            }
         }
     }
 
