@@ -408,7 +408,7 @@ class APIConnection {
         fun getHistories(context: Context, db: AppDatabase){
             val sharedPref = context.getSharedPreferences("id.ac.istts.dkdm.myactivity", MODE_PRIVATE)
             var last_updated = sharedPref.getString("histories", null)
-            if (last_updated == null){
+            if (last_updated == ""){
                 // get all histories
                 val strReq = object : StringRequest(
                     Method.GET,
@@ -522,7 +522,7 @@ class APIConnection {
         fun getNotifications(context: Context, db: AppDatabase){
             val sharedPref = context.getSharedPreferences("id.ac.istts.dkdm.myactivity", MODE_PRIVATE)
             var last_updated = sharedPref.getString("notifications", null)
-            if (last_updated == null){
+            if (last_updated == ""){
                 // get all notifications
                 val strReq = object : StringRequest(
                     Method.GET,
@@ -604,7 +604,7 @@ class APIConnection {
             var success = false
             val strReq = object : StringRequest(
                 Method.PUT,
-                "$BASE_URL/notifications/${notification.notification_id}",
+                "$BASE_URL/notifications/id/${notification.notification_id}",
                 Response.Listener {
                     sharedPref.edit().putString("status", "online").apply()
                     getNotifications(context, db)
@@ -661,7 +661,7 @@ class APIConnection {
         fun getContacts(context: Context, db: AppDatabase){
             val sharedPref = context.getSharedPreferences("id.ac.istts.dkdm.myactivity", MODE_PRIVATE)
             var last_updated = sharedPref.getString("contacts", null)
-            if (last_updated == null){
+            if (last_updated == ""){
                 // get all contacts
                 val strReq = object : StringRequest(
                     Method.GET,
@@ -812,7 +812,7 @@ class APIConnection {
         fun getCharities(context: Context, db: AppDatabase){
             val sharedPref = context.getSharedPreferences("id.ac.istts.dkdm.myactivity", MODE_PRIVATE)
             var last_updated = sharedPref.getString("charities", null)
-            if (last_updated == null){
+            if (last_updated == ""){
                 // get all charities
                 val strReq = object : StringRequest(
                     Method.GET,
