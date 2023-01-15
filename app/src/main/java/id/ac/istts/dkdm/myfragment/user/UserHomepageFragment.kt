@@ -117,10 +117,11 @@ class UserHomepageFragment(
                             // UPDATE TO MAIN WALLET
                             val getMainWallet = db.walletDao.getMainWallet(usernameLogin)
                             getMainWallet!!.walletBalance += selectedWallet.walletBalance
-                            db.walletDao.update(getMainWallet!!)
 
-                            // DELETE SELECTED WALLET
-                            db.walletDao.delete(db.walletDao.get(selectedWallet.wallet_id)!!)
+                            requireActivity().runOnUiThread {
+                                APIConnection.updateWallet(view.context, db, getMainWallet!!)
+                                APIConnection.deleteWallet(view.context, db, selectedWallet.wallet_id)
+                            }
 
                             // HABIS DI DELETE REFRESH PAGENYA SUPAYA RECYCLE VIEW E JUGA KE UPDATE
                             requireActivity().runOnUiThread {

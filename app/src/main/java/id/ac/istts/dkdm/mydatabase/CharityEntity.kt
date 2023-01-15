@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "charities")
 class CharityEntity (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     var charity_id: Int,
     var charity_name: String,
     var charity_description: String,

@@ -16,6 +16,7 @@ import id.ac.istts.dkdm.databinding.FragmentUserCharityBinding
 import id.ac.istts.dkdm.myactivity.user.UserMakeDonationActivity
 import id.ac.istts.dkdm.myactivity.user.UserSearchCharityActivity
 import id.ac.istts.dkdm.myadapter.RVCharityAdapter
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import kotlinx.coroutines.CoroutineScope
@@ -51,6 +52,8 @@ class UserCharityFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUserCharityBinding.bind(view)
+
+        APIConnection.getCharities(view.context, db)
 
         // SET VIEW
         coroutine.launch {

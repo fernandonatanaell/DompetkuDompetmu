@@ -19,6 +19,9 @@ interface WalletDao {
     @Query("SELECT * FROM wallets WHERE username_user = :username AND deleted_at == \"null\"")
     suspend fun getAllMyWallet(username: String): List<WalletEntity>
 
+    @Query("SELECT * FROM wallets WHERE wallet_id = :wallet_id")
+    suspend fun getWalletForDB(wallet_id: Int): WalletEntity
+
     @Query("SELECT * FROM wallets WHERE wallet_id = :wallet_id AND deleted_at == \"null\"")
     suspend fun get(wallet_id: Int): WalletEntity?
 

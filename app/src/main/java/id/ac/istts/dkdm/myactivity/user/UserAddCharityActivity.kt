@@ -200,7 +200,7 @@ class UserAddCharityActivity : AppCompatActivity() {
                                     )
 
                                     runOnUiThread {
-                                        APIConnection.insertCharity(this@UserAddCharityActivity, db, newCharity, selectedImage!!)
+                                        APIConnection.insertCharity(this@UserAddCharityActivity, db, newCharity)
                                         finish()
                                     }
                                 }

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "wallets")
 data class WalletEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     var wallet_id: Int,
     var username_user: String,
     var walletName:  String,

@@ -10,7 +10,7 @@ import java.util.*
 
 @Entity(tableName = "notifications")
 data class NotificationEntity (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     var notification_id: Int,
     var notification_text: String,
     var username_user: String,

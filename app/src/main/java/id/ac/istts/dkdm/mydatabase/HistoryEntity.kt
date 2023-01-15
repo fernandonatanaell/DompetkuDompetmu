@@ -10,7 +10,7 @@ import java.util.*
 
 @Entity(tableName = "histories")
 data class HistoryEntity(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     var history_id: Int,
     var id_wallet: Int = 0,
     var historyType: String,

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "contacts")
 class ContactEntity (
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = false)
     var contact_id: Int,
     var username_user: String,
     var username_friend: String,

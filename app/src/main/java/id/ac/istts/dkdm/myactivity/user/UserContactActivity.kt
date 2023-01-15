@@ -141,17 +141,9 @@ class UserContactActivity : AppCompatActivity() {
                     val nameDeletedUser =  db.userDao.getFromUsername(getContact!!.username_friend)!!.name
 
                     runOnUiThread {
-                        val success = APIConnection.deleteContact(this@UserContactActivity, db, contact_id)
+                        APIConnection.deleteContact(this@UserContactActivity, db, contact_id)
 
-                        if (success){
-                            Toast.makeText(
-                                this@UserContactActivity,
-                                "Yayy! $nameDeletedUser was successfully removed from your contacts!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                            initRV()
-                        }
+                        initRV()
                     }
                 }
             }

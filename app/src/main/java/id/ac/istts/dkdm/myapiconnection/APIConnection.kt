@@ -50,6 +50,17 @@ class APIConnection {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
 
+        fun parseDate(date: String): String {
+            val temp = date.split("T")
+            val temp2 = temp[1].split(".")
+            return temp[0] + " " + temp2[0]
+        }
+
+        fun parseNoTime(date: String): String {
+            val temp = date.split("T")
+            return temp[0]
+        }
+
         //    === USERS ===
         fun toDBUsers(obj: JSONArray, db: AppDatabase, sharedPref: SharedPreferences){
             coroutine.launch {
@@ -225,7 +236,7 @@ class APIConnection {
                         deleted_at = deleted_at
                     )
 
-                    val checkWallet = db.walletDao.get(wallet_id)
+                    val checkWallet = db.walletDao.getWalletForDB(wallet_id)
                     if (checkWallet == null){
                         db.walletDao.insert(newWallet)
                     } else {
@@ -381,7 +392,7 @@ class APIConnection {
                     val historyType = history.getString("historyType")
                     val historyDescription = history.getString("historyDescription")
                     val historyAmount = history.getLong("historyAmount")
-                    val historyDate = history.getString("historyDate")
+                    val historyDate = parseNoTime(history.getString("historyDate"))
                     val deleted_at = history.getString("deleted_at")
 
                     val newHistory = HistoryEntity(
@@ -495,7 +506,7 @@ class APIConnection {
                     val notification_id = notification.getInt("notification_id")
                     val notification_text = notification.getString("notification_text")
                     val username_user = notification.getString("username_user")
-                    val notification_date = notification.getString("notification_date")
+                    val notification_date = parseDate(notification.getString("notification_date"))
                     val userAlreadySee = notification.getInt("userAlreadySee")
                     val deleted_at = notification.getString("deleted_at")
 
@@ -647,7 +658,7 @@ class APIConnection {
                         deleted_at = deleted_at
                     )
 
-                    val checkContact = db.contactDao.getContact(contact_id)
+                    val checkContact = db.contactDao.getContactForDB(contact_id)
                     if (checkContact == null){
                         db.contactDao.insert(newContact)
                     } else {
@@ -761,7 +772,6 @@ class APIConnection {
         //    === CHARITIES ===
 
         fun toDBCharities(obj: JSONArray, db: AppDatabase, sharedPref: SharedPreferences, context: Context){
-            val directory = File(context.filesDir, "DompetkuDompetmu")
             coroutine.launch {
                 for (i in 0 until obj.length()){
                     val charities = obj.getJSONObject(i)
@@ -769,8 +779,8 @@ class APIConnection {
                     val charity_name = charities.getString("charity_name")
                     val charity_description = charities.getString("charity_description")
                     val source_id_wallet = charities.getInt("source_id_wallet")
-                    val start_date = charities.getString("charity_start_date")
-                    val end_date = charities.getString("charity_end_date")
+                    val start_date = parseDate(charities.getString("charity_start_date"))
+                    val end_date = parseDate(charities.getString("charity_end_date"))
                     val fundsGoal = charities.getLong("fundsGoal")
                     val fundsRaised = charities.getLong("fundsRaised")
                     val isCharityIsOver = charities.getInt("isCharityIsOver") == 1
@@ -798,11 +808,6 @@ class APIConnection {
                         db.charityDao.insert(newCharity)
                     } else {
                         db.charityDao.update(newCharity)
-                    }
-
-                    val file = File(directory, newCharity.imgPath)
-                    if (!file.exists()) {
-                        getImageCharity(context, newCharity, sharedPref)
                     }
                 }
                 sharedPref.edit().putString("charities", LocalDateTime.now().format(formatter)).apply()
@@ -858,42 +863,40 @@ class APIConnection {
             }
         }
 
-        fun insertCharity(context: Context, db: AppDatabase, charity: CharityEntity, selectedImage: Uri): Boolean{
+        fun insertCharity(context: Context, db: AppDatabase, charity: CharityEntity): Boolean{
             val sharedPref = context.getSharedPreferences("id.ac.istts.dkdm.myactivity", MODE_PRIVATE)
             var success = false
-
-            // process image
-            val imageUpload = MediaStore.Images.Media.getBitmap(context.contentResolver, selectedImage)
-            val baos = ByteArrayOutputStream()
-            val mimeType = context.contentResolver.getType(selectedImage)
-            val filename = charity.imgPath
-            imageUpload.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val imageData = baos.toByteArray()
-
-            val multipartRequest = VolleyMultipartRequest(
-                Request.Method.POST,
+            val strReq = object : StringRequest(
+                Method.POST,
                 "$BASE_URL/charities",
-                {
+                Response.Listener {
                     sharedPref.edit().putString("status", "online").apply()
                     getCharities(context, db)
                     success = true
                 },
-                {
+                Response.ErrorListener {
                     toastError(context, "insert")
                     sharedPref.edit().putString("status", "insert").apply()
                 }
-            )
-
-            multipartRequest.addMultipartString("charity_name", charity.charity_name)
-            multipartRequest.addMultipartString("charity_description", charity.charity_description)
-            multipartRequest.addMultipartString("source_id_wallet", charity.source_id_wallet.toString())
-            multipartRequest.addMultipartString("fundsGoal", charity.fundsGoal.toString())
-            multipartRequest.addMultipartString("imgPath", charity.imgPath)
-            multipartRequest.addMultipartString("charity_end_date", charity.charity_end_date)
-            multipartRequest.addMultipartFile("image", imageData, filename, mimeType!!)
+            ){
+                override fun getParams(): MutableMap<String, String> {
+                    val params = HashMap<String, String>()
+                    params["charity_name"] = charity.charity_name
+                    params["charity_description"] = charity.charity_description
+                    params["source_id_wallet"] = charity.source_id_wallet.toString()
+                    params["charity_start_date"] = charity.charity_start_date
+                    params["charity_end_date"] = charity.charity_end_date
+                    params["fundsGoal"] = charity.fundsGoal.toString()
+                    params["fundsRaised"] = charity.fundsRaised.toString()
+                    params["isCharityIsOver"] = charity.isCharityIsOver.toString()
+                    params["isCharityBanned"] = charity.isCharityBanned.toString()
+                    params["imgPath"] = charity.imgPath
+                    return params
+                }
+            }
 
             val queue: RequestQueue = Volley.newRequestQueue(context)
-            queue.add(multipartRequest)
+            queue.add(strReq)
             return success
         }
 
@@ -932,41 +935,6 @@ class APIConnection {
             val queue: RequestQueue = Volley.newRequestQueue(context)
             queue.add(strReq)
             return success
-        }
-
-        fun getImageCharity(context: Context, charity: CharityEntity, sharedPref: SharedPreferences) {
-            val directory = File(context.filesDir, "DompetkuDompetmu")
-            if (!directory.exists()) {
-                directory.mkdirs()
-            }
-
-            val id = charity.charity_id
-
-            val imageRequest = ImageRequest(
-                "$BASE_URL/charities/id/$id/image",
-                {
-                    val file = File(directory, charity.imgPath)
-                    if (!file.exists()) {
-                        val outputStream = FileOutputStream(file)
-                        it.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                        outputStream.flush()
-                        outputStream.close()
-                    }
-                },
-                0,
-                0,
-                ImageView.ScaleType.CENTER_CROP,
-                Bitmap.Config.RGB_565,
-                {
-                    if (sharedPref.getString("status", "offline") != "select"){
-                        toastError(context, "select")
-                        sharedPref.edit().putString("status", "select").apply()
-                    }
-                }
-            )
-
-            val queue: RequestQueue = Volley.newRequestQueue(context)
-            queue.add(imageRequest)
         }
 
 
