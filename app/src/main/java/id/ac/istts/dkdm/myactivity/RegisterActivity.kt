@@ -114,32 +114,16 @@ class RegisterActivity : AppCompatActivity() {
                                 deleted_at = "null"
                             )
 
-                            var success = false
                             runOnUiThread {
                                 binding.clLoadingRegister.visibility = View.VISIBLE
-                                success = APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
+                                APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
                             }
 
                             delay(4000)
 
                             runOnUiThread {
                                 binding.clLoadingRegister.visibility = View.GONE
-
-                                if(success){
-                                    Toast.makeText(
-                                        this@RegisterActivity,
-                                        "Yayy! Your account has been successfully created!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-
-                                    cleanInput()
-                                } else {
-                                    Toast.makeText(
-                                        this@RegisterActivity,
-                                        "Oopps! Failed to create your account. Please try again!",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
+                                finish()
                             }
                         }
                     }

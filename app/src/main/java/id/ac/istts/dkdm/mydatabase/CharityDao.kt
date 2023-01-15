@@ -25,14 +25,16 @@ interface CharityDao {
             "AND w.username_user <> :username " +
             "AND substr(c.charity_end_date, 1, 10) >= :tanggalbatas " +
             "AND c.deleted_at == \"null\" " +
-            "ORDER BY c.charity_start_date ASC")
+            "ORDER BY c.charity_end_date ASC " +
+            "LIMIT 20")
     suspend fun getAllCharityUrgent(username: String, tanggalbatas: String): List<CharityEntity>
 
     @Query("SELECT * FROM charities AS c JOIN wallets AS w ON c.source_id_wallet = w.wallet_id " +
             "WHERE c.isCharityIsOver = 0 AND c.isCharityBanned = 0 " +
             "AND substr(c.charity_end_date, 1, 10) >= :tanggalbatas " +
             "AND c.deleted_at == \"null\" " +
-            "ORDER BY c.charity_start_date DESC")
+            "ORDER BY c.charity_start_date DESC " +
+            "LIMIT 20")
     suspend fun getAllCharityLatest(tanggalbatas: String): List<CharityEntity>
 
     @Query("SELECT * FROM charities AS c JOIN wallets AS w ON c.source_id_wallet = w.wallet_id WHERE c.isCharityIsOver = 0 AND c.isCharityBanned = 0 AND w.username_user <> :username AND c.charity_name LIKE '%' || :charity_name || '%' AND c.deleted_at == \"null\"")
