@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityUserEditProfileBinding
+import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -74,8 +75,8 @@ class UserEditProfileActivity : AppCompatActivity() {
                         getCurrentUser.password = newPasswordUser
                     }
 
-                    db.userDao.update(getCurrentUser)
                     runOnUiThread {
+                        APIConnection.updateUser(this@UserEditProfileActivity, db, getCurrentUser)
                         Toast.makeText(this@UserEditProfileActivity, "Yayy! Your account has been successfully updated!", Toast.LENGTH_LONG).show()
                     }
 
