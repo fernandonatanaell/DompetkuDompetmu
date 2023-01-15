@@ -120,8 +120,11 @@ class UserTransferActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
+                                binding.clLoadingTransfer.visibility = View.VISIBLE
                                 APIConnection.insertHistory(this@UserTransferActivity, db, newHistory)
                             }
+
+                            delay(1000)
 
                             var selectedWallet = db.walletDao.get(newHistory.id_wallet)
                             selectedWallet!!.walletBalance -= newHistory.historyAmount
@@ -129,6 +132,8 @@ class UserTransferActivity : AppCompatActivity() {
                             runOnUiThread {
                                 APIConnection.updateWallet(this@UserTransferActivity, db, selectedWallet!!)
                             }
+
+                            delay(1000)
 
                             var newNotifications = NotificationEntity(
                                 notification_id = -1,
@@ -141,6 +146,8 @@ class UserTransferActivity : AppCompatActivity() {
                                 APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
                             }
 
+                            delay(1000)
+
                             // TO USER
                             selectedWallet = db.walletDao.getMainWallet(selectedContact!!.username_friend)
                             selectedWallet!!.walletBalance += transferAmount.toLong()
@@ -148,6 +155,8 @@ class UserTransferActivity : AppCompatActivity() {
                             runOnUiThread {
                                 APIConnection.updateWallet(this@UserTransferActivity, db, selectedWallet!!)
                             }
+
+                            delay(1000)
 
                             newHistory = HistoryEntity(
                                 history_id = -1,
@@ -162,6 +171,8 @@ class UserTransferActivity : AppCompatActivity() {
                                 APIConnection.insertHistory(this@UserTransferActivity, db, newHistory)
                             }
 
+                            delay(1000)
+
                             newNotifications = NotificationEntity(
                                 notification_id = -1,
                                 notification_text = "You get Rp ${transferAmount.toLong().toRupiah()} to ${selectedWallet.walletName} from ${usernameLogin}.",
@@ -170,11 +181,10 @@ class UserTransferActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
-                                binding.clLoadingTransfer.visibility = View.VISIBLE
                                 APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
                             }
 
-                            delay(4000)
+                            delay(1000)
 
                             runOnUiThread {
                                 binding.clLoadingTransfer.visibility = View.GONE
