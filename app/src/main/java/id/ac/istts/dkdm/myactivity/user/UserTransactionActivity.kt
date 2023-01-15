@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -19,6 +20,7 @@ import id.ac.istts.dkdm.mydatabase.NotificationEntity
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
@@ -94,7 +96,7 @@ class UserTransactionActivity : AppCompatActivity() {
 
                 if(userPIN.isBlank())
                     binding.tilUserPINTransfer.error = "PIN required!"
-            } else if(transactionAmount.toLong() > 500) {
+            } else if(transactionAmount.toLong() > 499) {
                 coroutine.launch {
                     val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
 
@@ -150,8 +152,16 @@ class UserTransactionActivity : AppCompatActivity() {
                             }
 
                             runOnUiThread {
+                                binding.clLoadingTransaction.visibility = View.VISIBLE
                                 APIConnection.updateWallet(this@UserTransactionActivity, db, selectedWallet)
                                 APIConnection.insertNotification(this@UserTransactionActivity, db, newNotifications)
+                            }
+
+                            delay(5000)
+
+                            runOnUiThread {
+                                binding.clLoadingTransaction.visibility = View.GONE
+
                                 val resultIntent = Intent()
                                 setResult(Activity.RESULT_OK, resultIntent)
                                 finish()
@@ -168,7 +178,7 @@ class UserTransactionActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                binding.tilAmountTransaction.error = "Amount must be greater than Rp 500!"
+                binding.tilAmountTransaction.error = "Amount must be greater than Rp 499!"
             }
         }
 

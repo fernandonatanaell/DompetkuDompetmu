@@ -2,6 +2,7 @@ package id.ac.istts.dkdm.myactivity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityRegisterBinding
@@ -11,6 +12,7 @@ import id.ac.istts.dkdm.mydatabase.UserEntity
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.floor
 
@@ -103,7 +105,6 @@ class RegisterActivity : AppCompatActivity() {
                                 APIConnection.insertUser(this@RegisterActivity, db, user)
                             }
 
-
                             val newWallet = WalletEntity(
                                 wallet_id = -1,
                                 username_user = usernameRegister,
@@ -113,9 +114,32 @@ class RegisterActivity : AppCompatActivity() {
                                 deleted_at = "null"
                             )
 
+                            var success = false
                             runOnUiThread {
-                                APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
-                                cleanInput()
+                                binding.clLoadingRegister.visibility = View.VISIBLE
+                                success = APIConnection.insertWallet(this@RegisterActivity, db, newWallet)
+                            }
+
+                            delay(4000)
+
+                            runOnUiThread {
+                                binding.clLoadingRegister.visibility = View.GONE
+
+                                if(success){
+                                    Toast.makeText(
+                                        this@RegisterActivity,
+                                        "Yayy! Your account has been successfully created!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+
+                                    cleanInput()
+                                } else {
+                                    Toast.makeText(
+                                        this@RegisterActivity,
+                                        "Oopps! Failed to create your account. Please try again!",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }
                         }
                     }

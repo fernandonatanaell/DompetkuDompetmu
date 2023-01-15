@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -16,6 +17,7 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
@@ -87,7 +89,7 @@ class UserTransferActivity : AppCompatActivity() {
 
                 if(selectedContact == null)
                     binding.etSelectContactTransfer.error = "Contact must be selected!"
-            } else if(transferAmount.toLong() > 0) {
+            } else if(transferAmount.toLong() >= 1000) {
                 coroutine.launch {
                     val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
 
@@ -139,7 +141,6 @@ class UserTransferActivity : AppCompatActivity() {
                                 APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
                             }
 
-
                             // TO USER
                             selectedWallet = db.walletDao.getMainWallet(selectedContact!!.username_friend)
                             selectedWallet!!.walletBalance += transferAmount.toLong()
@@ -169,12 +170,19 @@ class UserTransferActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
+                                binding.clLoadingTransfer.visibility = View.VISIBLE
                                 APIConnection.insertNotification(this@UserTransferActivity, db, newNotifications)
+                            }
+
+                            delay(4000)
+
+                            runOnUiThread {
+                                binding.clLoadingTransfer.visibility = View.GONE
+
                                 val resultIntent = Intent()
                                 setResult(Activity.RESULT_OK, resultIntent)
                                 finish()
                             }
-
                         } else {
                             runOnUiThread {
                                 Toast.makeText(
@@ -187,7 +195,7 @@ class UserTransferActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                binding.tilAmountTransfer.error = "Amount must be greater than 0!"
+                binding.tilAmountTransfer.error = "Amount must be greater than Rp 999!"
             }
         }
 

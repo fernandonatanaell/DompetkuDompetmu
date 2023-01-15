@@ -148,6 +148,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="-10dp"
             android:hint="Select wallet"
+            android:visibility="invisible"
             app:helperTextTextColor="@color/myErrorColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -168,6 +169,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Amount"
+            android:visibility="invisible"
             app:helperTextTextColor="@color/myErrorColor"
             app:layout_constraintTop_toBottomOf="@+id/tilWalletDonation"
             app:prefixText="Rp "
@@ -187,6 +189,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="102dp"
             android:hint="PIN"
+            android:visibility="invisible"
             app:helperTextTextColor="@color/myErrorColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.457"
@@ -206,10 +209,34 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="192dp"
             android:text="SUBMIT DONATION"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.457"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tilWalletDonation" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clLoadingMakeDonation"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#00404040"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

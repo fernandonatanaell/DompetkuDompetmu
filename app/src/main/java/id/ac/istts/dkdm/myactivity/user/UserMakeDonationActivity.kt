@@ -6,11 +6,13 @@ import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.view.View
 import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.text.bold
+import androidx.core.view.isVisible
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
 import id.ac.istts.dkdm.databinding.ActivityUserMakeDonationBinding
 import id.ac.istts.dkdm.myapiconnection.APIConnection
@@ -49,201 +51,226 @@ class UserMakeDonationActivity : AppCompatActivity() {
         setContentView(binding.root)
         db = AppDatabase.build(this)
 
-        APIConnection.getWallets(this, db)
-
         // RECEIVE DATA
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
 
-        // SET VIEW
         coroutine.launch {
-            selectedCharity = db.charityDao.getCharity(intent.getIntExtra("selectedCharityId", -1))
-            val listOfMyWallet = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
-            selectedWallet = listOfMyWallet[0]
+            runOnUiThread {
+                APIConnection.getWallets(this@UserMakeDonationActivity, db)
+            }
+
+            delay(500)
 
             runOnUiThread {
-                val adp1: ArrayAdapter<WalletEntity> = ArrayAdapter<WalletEntity>(this@UserMakeDonationActivity, android.R.layout.simple_list_item_1, listOfMyWallet)
-                adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                (binding.etWalletListDonation as? AutoCompleteTextView)?.setAdapter(adp1)
-                binding.etWalletListDonation.setOnItemClickListener { adapterView, _, i, _ ->
-                    selectedWallet = adapterView.getItemAtPosition(i) as WalletEntity
-                }
-                binding.etWalletListDonation.setText(binding.etWalletListDonation.adapter.getItem(0).toString(), false)
-
-                binding.tvNameCharityDonation.text = selectedCharity.charity_name
-                binding.tvDescCharityDonation.text = selectedCharity.charity_description
-                binding.tvfFundRaisedDonation.text = "Rp ${selectedCharity.fundsRaised.toRupiah()},00"
-                binding.tvfFundGoalDonation.text = SpannableStringBuilder().append("Raised from ").bold { append("Rp ${selectedCharity.fundsGoal.toRupiah()},00") }
-
-                val directory = File(filesDir, "DompetkuDompetmu")
-                val file = File(directory, selectedCharity.imgPath)
-                if (file.exists()) {
-                    val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                    binding.ivCharityDonation.setImageBitmap(bitmap)
-                }
-
-                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val dateNow = sdf.parse(sdf.format(Date()))
-                val dateEnd = sdf.parse(selectedCharity.charity_end_date)
-                var diff: Long = (dateEnd.time - dateNow.time) / 1000 / 60
-
-                if(diff < 1440){
-                    if(diff < 60){
-                        binding.tvTotalDaysLeft.text = "$diff minutes to go"
-                    } else {
-                        diff /= 60
-                        binding.tvTotalDaysLeft.text = "$diff hours to go"
-                    }
-                } else {
-                    diff = diff / 60 / 24
-                    binding.tvTotalDaysLeft.text = "$diff days to go"
-                }
-
-                binding.pbDonation.max = selectedCharity.fundsGoal.toInt()
-                binding.pbDonation.progress = selectedCharity.fundsRaised.toInt()
-            }
-        }
-
-        binding.btnSubmitDonation.setOnClickListener {
-            val amountDonation = binding.etAmountDonation.text.toString()
-            val userPIN = binding.etUserPINMakeDonation.text.toString()
-            resetErrorInput()
-
-            if(amountDonation.isBlank() || userPIN.isBlank()){
-                if(amountDonation.isBlank())
-                    binding.tilAmountDonation.error = "Amount required!"
-
-                if(userPIN.isBlank())
-                    binding.tilUserPINMakeDonation.error = "PIN required!"
-            } else if(amountDonation.toLong() < 5000){
-                binding.tilAmountDonation.error = "Amount must be greater than Rp 5000!"
-            } else {
+                // SET VIEW
                 coroutine.launch {
-                    val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
+                    selectedCharity = db.charityDao.getCharity(intent.getIntExtra("selectedCharityId", -1))
+                    val listOfMyWallet = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
+                    selectedWallet = listOfMyWallet[0]
 
-                    if(userPIN.toInt() != getUserPin){
-                        runOnUiThread {
-                            Toast.makeText(this@UserMakeDonationActivity, "Oopps! Your PIN is incorrect!", Toast.LENGTH_LONG).show()
+                    runOnUiThread {
+                        val adp1: ArrayAdapter<WalletEntity> = ArrayAdapter<WalletEntity>(this@UserMakeDonationActivity, android.R.layout.simple_list_item_1, listOfMyWallet)
+                        adp1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        (binding.etWalletListDonation as? AutoCompleteTextView)?.setAdapter(adp1)
+                        binding.etWalletListDonation.setOnItemClickListener { adapterView, _, i, _ ->
+                            selectedWallet = adapterView.getItemAtPosition(i) as WalletEntity
                         }
-                    } else {
-                        if(amountDonation.toLong() > selectedWallet.walletBalance) {
-                            runOnUiThread {
-                                Toast.makeText(
-                                    this@UserMakeDonationActivity,
-                                    "Oopps! You have insufficient balance!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                        binding.etWalletListDonation.setText(binding.etWalletListDonation.adapter.getItem(0).toString(), false)
+
+                        binding.tvNameCharityDonation.text = selectedCharity.charity_name
+                        binding.tvDescCharityDonation.text = selectedCharity.charity_description
+                        binding.tvfFundRaisedDonation.text = "Rp ${selectedCharity.fundsRaised.toRupiah()},00"
+                        binding.tvfFundGoalDonation.text = SpannableStringBuilder().append("Raised from ").bold { append("Rp ${selectedCharity.fundsGoal.toRupiah()},00") }
+
+                        val directory = File(filesDir, "DompetkuDompetmu")
+                        val file = File(directory, selectedCharity.imgPath)
+                        if (file.exists()) {
+                            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                            binding.ivCharityDonation.setImageBitmap(bitmap)
+                        }
+
+                        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        val dateNow = sdf.parse(sdf.format(Date()))
+                        val dateEnd = sdf.parse(selectedCharity.charity_end_date)
+                        var diff: Long = (dateEnd.time - dateNow.time) / 1000 / 60
+
+                        if(diff < 1440){
+                            if(diff < 60){
+                                binding.tvTotalDaysLeft.text = "$diff minutes to go"
+                            } else {
+                                diff /= 60
+                                binding.tvTotalDaysLeft.text = "$diff hours to go"
                             }
                         } else {
-                            if(selectedCharity.fundsRaised + amountDonation.toLong() > selectedCharity.fundsGoal){
+                            diff = diff / 60 / 24
+                            binding.tvTotalDaysLeft.text = "$diff days to go"
+                        }
+
+                        binding.pbDonation.max = selectedCharity.fundsGoal.toInt()
+                        binding.pbDonation.progress = selectedCharity.fundsRaised.toInt()
+                    }
+
+                    if(usernameLogin != db.walletDao.get(selectedCharity.source_id_wallet)!!.username_user) {
+                        runOnUiThread {
+                            binding.tilWalletDonation.isVisible = true
+                            binding.tilAmountDonation.isVisible = true
+                            binding.tilUserPINMakeDonation.isVisible = true
+                            binding.btnSubmitDonation.isVisible = true
+                        }
+                    }
+                }
+
+                binding.btnSubmitDonation.setOnClickListener {
+                    val amountDonation = binding.etAmountDonation.text.toString()
+                    val userPIN = binding.etUserPINMakeDonation.text.toString()
+                    resetErrorInput()
+
+                    if(amountDonation.isBlank() || userPIN.isBlank()){
+                        if(amountDonation.isBlank())
+                            binding.tilAmountDonation.error = "Amount required!"
+
+                        if(userPIN.isBlank())
+                            binding.tilUserPINMakeDonation.error = "PIN required!"
+                    } else if(amountDonation.toLong() < 5000){
+                        binding.tilAmountDonation.error = "Amount must be greater than Rp 4.999!"
+                    } else {
+                        coroutine.launch {
+                            val getUserPin = db.userDao.getFromUsername(usernameLogin)!!.userPIN
+
+                            if(userPIN.toInt() != getUserPin){
                                 runOnUiThread {
-                                    Toast.makeText(
-                                        this@UserMakeDonationActivity,
-                                        "Oopps! Your donations exceed the limit!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    Toast.makeText(this@UserMakeDonationActivity, "Oopps! Your PIN is incorrect!", Toast.LENGTH_LONG).show()
                                 }
                             } else {
-                                selectedCharity.fundsRaised += amountDonation.toLong()
+                                if(amountDonation.toLong() > selectedWallet.walletBalance) {
+                                    runOnUiThread {
+                                        Toast.makeText(
+                                            this@UserMakeDonationActivity,
+                                            "Oopps! You have insufficient balance!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                } else {
+                                    if(selectedCharity.fundsRaised + amountDonation.toLong() > selectedCharity.fundsGoal){
+                                        runOnUiThread {
+                                            Toast.makeText(
+                                                this@UserMakeDonationActivity,
+                                                "Oopps! Your donations exceed the limit!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    } else {
+                                        selectedCharity.fundsRaised += amountDonation.toLong()
 
-                                // UPDATE CHARITY
-                                if(selectedCharity.fundsRaised == selectedCharity.fundsGoal){
-                                    selectedCharity.isCharityIsOver = true
-                                }
+                                        // UPDATE CHARITY
+                                        if(selectedCharity.fundsRaised == selectedCharity.fundsGoal){
+                                            selectedCharity.isCharityIsOver = true
+                                        }
 
-                                runOnUiThread {
-                                    APIConnection.updateCharity(this@UserMakeDonationActivity, db, selectedCharity)
-                                }
+                                        runOnUiThread {
+                                            APIConnection.updateCharity(this@UserMakeDonationActivity, db, selectedCharity)
+                                        }
 
-                                delay(1000)
+                                        delay(1000)
 
-                                // UPDATE WALLET BALANCE USER WHO DONATE
-                                selectedWallet.walletBalance -= amountDonation.toLong()
+                                        // UPDATE WALLET BALANCE USER WHO DONATE
+                                        selectedWallet.walletBalance -= amountDonation.toLong()
 
-                                runOnUiThread {
-                                    APIConnection.updateWallet(this@UserMakeDonationActivity, db, selectedWallet)
-                                }
+                                        runOnUiThread {
+                                            APIConnection.updateWallet(this@UserMakeDonationActivity, db, selectedWallet)
+                                        }
 
-                                delay(1000)
+                                        delay(1000)
 
-                                // USER WHO DONATED TO THE CHARITY
-                                var newNotifications = NotificationEntity(
-                                    notification_id = -1,
-                                    notification_text = "Your Rp ${amountDonation.toLong().toRupiah()} to '${selectedCharity.charity_name}' is successful donated.",
-                                    username_user = usernameLogin,
-                                    deleted_at = "null"
-                                )
+                                        // USER WHO DONATED TO THE CHARITY
+                                        var newNotifications = NotificationEntity(
+                                            notification_id = -1,
+                                            notification_text = "Your Rp ${amountDonation.toLong().toRupiah()} to '${selectedCharity.charity_name}' is successful donated.",
+                                            username_user = usernameLogin,
+                                            deleted_at = "null"
+                                        )
 
-                                runOnUiThread {
-                                    APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
-                                }
+                                        runOnUiThread {
+                                            APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
+                                        }
 
-                                delay(1000)
+                                        delay(1000)
 
-                                var newHistory = HistoryEntity(
-                                    history_id = -1,
-                                    id_wallet = selectedWallet.wallet_id,
-                                    historyType = "Withdraw",
-                                    historyDescription = "Make a donation to '${selectedCharity.charity_name}'",
-                                    historyAmount = amountDonation.toLong(),
-                                    deleted_at = "null"
-                                )
+                                        var newHistory = HistoryEntity(
+                                            history_id = -1,
+                                            id_wallet = selectedWallet.wallet_id,
+                                            historyType = "Withdraw",
+                                            historyDescription = "Make a donation to '${selectedCharity.charity_name}'",
+                                            historyAmount = amountDonation.toLong(),
+                                            deleted_at = "null"
+                                        )
 
-                                runOnUiThread {
-                                    APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
-                                }
+                                        runOnUiThread {
+                                            APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
+                                        }
 
-                                delay(1000)
+                                        delay(1000)
 
-                                // UPDATE WALLET BALANCE USER WHO RECEIVED DONATED
-                                val walletDonated = db.walletDao.get(selectedCharity.source_id_wallet)
-                                walletDonated!!.walletBalance += amountDonation.toLong()
+                                        // UPDATE WALLET BALANCE USER WHO RECEIVED DONATED
+                                        val walletDonated = db.walletDao.get(selectedCharity.source_id_wallet)
+                                        walletDonated!!.walletBalance += amountDonation.toLong()
 
-                                runOnUiThread {
-                                    APIConnection.updateWallet(this@UserMakeDonationActivity, db, walletDonated!!)
-                                }
+                                        runOnUiThread {
+                                            APIConnection.updateWallet(this@UserMakeDonationActivity, db, walletDonated!!)
+                                        }
 
-                                delay(1000)
+                                        delay(1000)
 
-                                // OWNER CHARITY
-                                newNotifications = NotificationEntity(
-                                    notification_id = -1,
-                                    notification_text = "Your '${selectedCharity.charity_name}' have received a donation of Rp ${amountDonation.toLong().toRupiah()} from ${usernameLogin}.",
-                                    username_user = walletDonated!!.username_user,
-                                    deleted_at = "null"
-                                )
+                                        // OWNER CHARITY
+                                        newNotifications = NotificationEntity(
+                                            notification_id = -1,
+                                            notification_text = "Your '${selectedCharity.charity_name}' have received a donation of Rp ${amountDonation.toLong().toRupiah()} from ${usernameLogin}.",
+                                            username_user = walletDonated!!.username_user,
+                                            deleted_at = "null"
+                                        )
 
-                                runOnUiThread {
-                                    APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
-                                }
+                                        runOnUiThread {
+                                            APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
+                                        }
 
-                                delay(1000)
+                                        delay(1000)
 
-                                newHistory = HistoryEntity(
-                                    history_id = -1,
-                                    id_wallet = selectedCharity.source_id_wallet,
-                                    historyType = "Income",
-                                    historyDescription = "Received a donation from $usernameLogin to '${selectedCharity.charity_name}'",
-                                    historyAmount = amountDonation.toLong(),
-                                    deleted_at = "null"
-                                )
+                                        newHistory = HistoryEntity(
+                                            history_id = -1,
+                                            id_wallet = selectedCharity.source_id_wallet,
+                                            historyType = "Income",
+                                            historyDescription = "Received a donation from $usernameLogin to '${selectedCharity.charity_name}'",
+                                            historyAmount = amountDonation.toLong(),
+                                            deleted_at = "null"
+                                        )
 
-                                runOnUiThread {
-                                    APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
-                                    val resultIntent = Intent()
-                                    setResult(Activity.RESULT_OK, resultIntent)
-                                    finish()
+                                        runOnUiThread {
+                                            binding.clLoadingMakeDonation.visibility = View.VISIBLE
+                                            APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
+                                        }
+
+                                        delay(6000)
+
+                                        runOnUiThread {
+                                            binding.clLoadingMakeDonation.visibility = View.GONE
+
+                                            val resultIntent = Intent()
+                                            setResult(Activity.RESULT_OK, resultIntent)
+                                            finish()
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        }
 
-        binding.btnBackFromDonation.setOnClickListener {
-            val resultIntent = Intent()
-            setResult(Activity.RESULT_CANCELED, resultIntent)
-            finish()
+                binding.btnBackFromDonation.setOnClickListener {
+                    val resultIntent = Intent()
+                    setResult(Activity.RESULT_CANCELED, resultIntent)
+                    finish()
+                }
+            }
         }
     }
 

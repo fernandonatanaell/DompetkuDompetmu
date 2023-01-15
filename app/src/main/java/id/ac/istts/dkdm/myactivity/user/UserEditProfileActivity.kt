@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityUserEditProfileBinding
@@ -11,6 +12,7 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
@@ -76,13 +78,19 @@ class UserEditProfileActivity : AppCompatActivity() {
                     }
 
                     runOnUiThread {
+                        binding.clLoadingEditProfile.visibility = View.VISIBLE
                         APIConnection.updateUser(this@UserEditProfileActivity, db, getCurrentUser)
-                        Toast.makeText(this@UserEditProfileActivity, "Yayy! Your account has been successfully updated!", Toast.LENGTH_LONG).show()
                     }
 
-                    val resultIntent = Intent()
-                    setResult(Activity.RESULT_OK, resultIntent)
-                    finish()
+                    delay(4000)
+
+                    runOnUiThread {
+                        binding.clLoadingEditProfile.visibility = View.GONE
+
+                        val resultIntent = Intent()
+                        setResult(Activity.RESULT_OK, resultIntent)
+                        finish()
+                    }
                 }
             }
         }

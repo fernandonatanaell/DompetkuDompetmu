@@ -13,6 +13,7 @@ import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import id.ac.istts.dkdm.mydatabase.NotificationEntity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RVAdminCharityAdapter(
@@ -56,6 +57,7 @@ class RVAdminCharityAdapter(
                     )
 
                     APIConnection.insertNotification(it.context, db, newNotification)
+                    delay(4000)
                 }
 
                 holder.toggleCharity.setBackgroundColor(Color.parseColor("#ba1a1a"))
@@ -76,6 +78,7 @@ class RVAdminCharityAdapter(
                     )
 
                     APIConnection.insertNotification(it.context, db, newNotification)
+                    delay(4000)
                 }
 
                 holder.toggleCharity.setBackgroundColor(Color.GREEN)

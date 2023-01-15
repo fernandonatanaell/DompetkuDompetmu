@@ -1,10 +1,13 @@
 package id.ac.istts.dkdm.myactivity.user
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.view.View
 import android.view.WindowManager
 import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
@@ -13,6 +16,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.material.datepicker.MaterialDatePicker
 import id.ac.istts.dkdm.databinding.ActivityUserAddCharityBinding
 import id.ac.istts.dkdm.myapiconnection.APIConnection
@@ -21,6 +26,7 @@ import id.ac.istts.dkdm.mydatabase.CharityEntity
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -200,12 +206,21 @@ class UserAddCharityActivity : AppCompatActivity() {
                                     )
 
                                     runOnUiThread {
+                                        binding.clLoadingAddCharity.visibility = View.VISIBLE
                                         APIConnection.insertCharity(this@UserAddCharityActivity, db, newCharity)
+                                    }
+
+                                    delay(4000)
+
+                                    runOnUiThread {
+                                        binding.clLoadingAddCharity.visibility = View.GONE
                                         finish()
                                     }
                                 }
                             } else {
-                                binding.tilAddCharityFundsGoal.error = "Fund goal must be greater than or equal to Rp 10.000!"
+                                runOnUiThread {
+                                    binding.tilAddCharityFundsGoal.error = "Fund goal must be greater than or equal to Rp 10.000!"
+                                }
                             }
                         }
                     }
@@ -222,7 +237,32 @@ class UserAddCharityActivity : AppCompatActivity() {
         }
     }
 
+    private fun permissionToRead() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                1001)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1001 -> {
+                if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    // Permission denied
+                    permissionToRead()
+                }
+                return
+            }
+        }
+    }
+
     private fun openGallery() {
+        permissionToRead()
+
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         uploadImageLauncher.launch(intent)

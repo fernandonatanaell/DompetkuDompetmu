@@ -20,6 +20,7 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -53,41 +54,49 @@ class UserCharityFragment(
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUserCharityBinding.bind(view)
 
-        APIConnection.getCharities(view.context, db)
-
-        // SET VIEW
         coroutine.launch {
-            // FOR YOU
-            val arr = db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>
-            val tempArr = ArrayList<CharityEntity>()
-            arr.shuffle()
-            for(k in 0..9) {
-                if(k < arr.size) {
-                    tempArr.add(arr[k])
+            requireActivity().runOnUiThread {
+                APIConnection.getCharities(view.context, db)
+            }
+
+            delay(500)
+
+            requireActivity().runOnUiThread {
+                // SET VIEW
+                coroutine.launch {
+                    // FOR YOU
+                    val arr = db.charityDao.getAllCharityExceptThisUser(usernameLogin) as ArrayList<CharityEntity>
+                    val tempArr = ArrayList<CharityEntity>()
+                    arr.shuffle()
+                    for(k in 0..9) {
+                        if(k < arr.size) {
+                            tempArr.add(arr[k])
+                        }
+                    }
+                    loadCharity(view, binding.rvForYouCharity , tempArr)
+
+                    // URGENT
+                    val current = LocalDate.now().toString()
+                    loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityUrgent(usernameLogin, current) as ArrayList<CharityEntity>)
+
+                    // LATEST
+                    val currentLatest = LocalDate.now().toString()
+                    loadCharity(view, binding.rvLatestCharity , db.charityDao.getAllCharityLatest(currentLatest) as ArrayList<CharityEntity>)
+                }
+
+                binding.btnToMyCharity.setOnClickListener {
+                    parentFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.mainFL, UserMyCharityFragment(db, coroutine, usernameLogin))
+                        .commit()
+                }
+
+                binding.etSearchCharity.setOnClickListener {
+                    val intent = Intent(view.context, UserSearchCharityActivity::class.java)
+                    intent.putExtra("usernameLogin", usernameLogin)
+                    startActivity(intent)
                 }
             }
-            loadCharity(view, binding.rvForYouCharity , tempArr)
-
-            // URGENT
-            val current = LocalDate.now().toString()
-            loadCharity(view, binding.rvUrgentCharity , db.charityDao.getAllCharityUrgent(usernameLogin, current) as ArrayList<CharityEntity>)
-
-            // LATEST
-            val currentLatest = LocalDate.now().toString()
-            loadCharity(view, binding.rvLatestCharity , db.charityDao.getAllCharityLatest(usernameLogin, currentLatest) as ArrayList<CharityEntity>)
-        }
-
-        binding.btnToMyCharity.setOnClickListener {
-            parentFragmentManager
-                .beginTransaction()
-                .replace(R.id.mainFL, UserMyCharityFragment(db, coroutine, usernameLogin))
-                .commit()
-        }
-
-        binding.etSearchCharity.setOnClickListener {
-            val intent = Intent(view.context, UserSearchCharityActivity::class.java)
-            intent.putExtra("usernameLogin", usernameLogin)
-            startActivity(intent)
         }
     }
 

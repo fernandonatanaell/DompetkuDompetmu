@@ -18,6 +18,7 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.CharityEntity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class UserMyCharityFragment(
@@ -50,19 +51,27 @@ class UserMyCharityFragment(
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUserMyCharityBinding.bind(view)
 
-        APIConnection.getCharities(view.context, db)
-
-        // SET VIEW
         coroutine.launch {
-            val tempAllCharity = db.charityDao.getAllMyCharity(usernameLogin) as ArrayList<CharityEntity>
             requireActivity().runOnUiThread {
-                binding.rvAllMyCharity.adapter = RVCharityAdapter(tempAllCharity, true){ selectedCharityId: Int ->
-                    refreshLauncher.launch(Intent(view.context, UserMakeDonationActivity::class.java).apply {
-                        putExtra("usernameLogin", usernameLogin)
-                        putExtra("selectedCharityId", selectedCharityId)
-                    })
+                APIConnection.getCharities(view.context, db)
+            }
+
+            delay(500)
+
+            requireActivity().runOnUiThread {
+                // SET VIEW
+                coroutine.launch {
+                    val tempAllCharity = db.charityDao.getAllMyCharity(usernameLogin) as ArrayList<CharityEntity>
+                    requireActivity().runOnUiThread {
+                        binding.rvAllMyCharity.adapter = RVCharityAdapter(tempAllCharity, true){ selectedCharityId: Int ->
+                            refreshLauncher.launch(Intent(view.context, UserMakeDonationActivity::class.java).apply {
+                                putExtra("usernameLogin", usernameLogin)
+                                putExtra("selectedCharityId", selectedCharityId)
+                            })
+                        }
+                        binding.rvAllMyCharity.layoutManager = LinearLayoutManager(view.context)
+                    }
                 }
-                binding.rvAllMyCharity.layoutManager = LinearLayoutManager(view.context)
             }
         }
     }

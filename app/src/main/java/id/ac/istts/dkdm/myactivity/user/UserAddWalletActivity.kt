@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import id.ac.istts.dkdm.databinding.ActivityUserAddWalletBinding
@@ -12,6 +13,7 @@ import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
@@ -71,9 +73,9 @@ class UserAddWalletActivity : AppCompatActivity() {
                     } else {
                         val earlyBalanceWallet = newWalletBalance.toLong()
 
-                        if(earlyBalanceWallet < 5000L){
+                        if(earlyBalanceWallet <= 4999L){
                             runOnUiThread {
-                                binding.tilNewWalletBalance.error = "The balance should be greater than Rp 5.000!"
+                                binding.tilNewWalletBalance.error = "The balance should be greater than Rp 4.999!"
                             }
                         } else {
                             val newWallet = WalletEntity(
@@ -86,7 +88,15 @@ class UserAddWalletActivity : AppCompatActivity() {
                             )
 
                             runOnUiThread {
+                                binding.clLoadingAddWallet.visibility = View.VISIBLE
                                 APIConnection.insertWallet(this@UserAddWalletActivity, db, newWallet)
+                            }
+
+                            delay(4000)
+
+                            runOnUiThread {
+                                binding.clLoadingAddWallet.visibility = View.GONE
+
                                 val resultIntent = Intent()
                                 setResult(Activity.RESULT_OK, resultIntent)
                                 finish()

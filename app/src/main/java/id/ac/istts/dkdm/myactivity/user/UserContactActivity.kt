@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.ContactEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
@@ -113,7 +115,15 @@ class UserContactActivity : AppCompatActivity() {
                                 )
 
                                 runOnUiThread {
+                                    binding.clLoadingContact.visibility = View.VISIBLE
                                     APIConnection.insertContact(this@UserContactActivity, db, newContact)
+                                }
+
+                                delay(4000)
+
+                                runOnUiThread {
+                                    binding.clLoadingContact.visibility = View.GONE
+
                                     binding.etFriendAccountNumber.setText("")
                                     binding.etUserPINContact.setText("")
                                     initRV()
@@ -137,11 +147,15 @@ class UserContactActivity : AppCompatActivity() {
         coroutine.launch {
             adapterContact = RVContactAdapter(this@UserContactActivity, db, coroutine, db.contactDao.getAllContacts(usernameLogin) as ArrayList<ContactEntity>){ contact_id->
                 coroutine.launch {
-                    val getContact = db.contactDao.getContact(contact_id)
-                    val nameDeletedUser =  db.userDao.getFromUsername(getContact!!.username_friend)!!.name
+                    runOnUiThread {
+                        binding.clLoadingContact.visibility = View.VISIBLE
+                        APIConnection.deleteContact(this@UserContactActivity, db, contact_id)
+                    }
+
+                    delay(4000)
 
                     runOnUiThread {
-                        APIConnection.deleteContact(this@UserContactActivity, db, contact_id)
+                        binding.clLoadingContact.visibility = View.GONE
 
                         initRV()
                     }

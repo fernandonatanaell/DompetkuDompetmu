@@ -13,6 +13,7 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.NotificationEntity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class UserNotificationFragment(
@@ -34,14 +35,22 @@ class UserNotificationFragment(
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentUserNotificationBinding.bind(view)
 
-        APIConnection.getNotifications(view.context, db)
-
-        // SET VIEW
         coroutine.launch {
-            val tempAllNotification = db.notificationDao.getAllNotifications(usernameLogin) as ArrayList<NotificationEntity>
             requireActivity().runOnUiThread {
-                binding.rvNotification.adapter = RVNotificationAdapter(db, coroutine, tempAllNotification)
-                binding.rvNotification.layoutManager = LinearLayoutManager(view.context) }
+                APIConnection.getNotifications(view.context, db)
+            }
+
+            delay(500)
+
+            requireActivity().runOnUiThread {
+                // SET VIEW
+                coroutine.launch {
+                    val tempAllNotification = db.notificationDao.getAllNotifications(usernameLogin) as ArrayList<NotificationEntity>
+                    requireActivity().runOnUiThread {
+                        binding.rvNotification.adapter = RVNotificationAdapter(db, coroutine, tempAllNotification)
+                        binding.rvNotification.layoutManager = LinearLayoutManager(view.context) }
+                }
+            }
         }
     }
 }

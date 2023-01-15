@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import id.ac.istts.dkdm.CurrencyUtils.toRupiah
 import id.ac.istts.dkdm.R
@@ -22,8 +24,10 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.AppDatabase
 import id.ac.istts.dkdm.mydatabase.WalletEntity
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -32,6 +36,8 @@ class UserHomepageFragment(
     private val coroutine: CoroutineScope,
     private var usernameLogin: String
 ) : Fragment() {
+    private lateinit var loadingAnim: ConstraintLayout
+
     private val refreshLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             result: ActivityResult ->
         if(result.resultCode == AppCompatActivity.RESULT_OK){
@@ -40,7 +46,6 @@ class UserHomepageFragment(
                 .beginTransaction()
                 .replace(R.id.mainFL, UserHomepageFragment(db, coroutine, usernameLogin))
                 .commit()
-
         }
     }
 
@@ -55,85 +60,112 @@ class UserHomepageFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentUserHomepageBinding.bind(view)
-
-        APIConnection.getWallets(view.context, db)
-
-        // SET VIEW
-        binding.tvDateToday.text = SimpleDateFormat("EEEE\ndd MMM yyyy").format(Date())
-
-        binding.ivAddNewWallet.setOnClickListener {
-            refreshLauncher.launch(Intent(view.context, UserAddWalletActivity::class.java).apply {
-                putExtra("usernameLogin", usernameLogin)
-            })
-        }
-
-        binding.btnToTopup.setOnClickListener {
-            refreshLauncher.launch(Intent(view.context, UserTransactionActivity::class.java).apply {
-                putExtra("usernameLogin", usernameLogin)
-                putExtra("isWithdraw", "false")
-            })
-        }
-
-        binding.btnToWithdraw.setOnClickListener {
-            refreshLauncher.launch(Intent(view.context, UserTransactionActivity::class.java).apply {
-                putExtra("usernameLogin", usernameLogin)
-                putExtra("isWithdraw", "true")
-            })
-        }
-
-        binding.btnToMyCharityHomepage.setOnClickListener {
-            val intent = Intent(view.context, UserAddCharityActivity::class.java)
-            intent.putExtra("usernameLogin", usernameLogin)
-            startActivity(intent)
-        }
-
-        binding.btnToHistory.setOnClickListener {
-            val intent = Intent(view.context, UserHistoryActivity::class.java)
-            intent.putExtra("usernameLogin", usernameLogin)
-            startActivity(intent)
-        }
+        loadingAnim = requireActivity().findViewById(R.id.clLoading)
 
         coroutine.launch {
-            val userLogin = db.userDao.getFromUsername(usernameLogin)
             requireActivity().runOnUiThread {
-                binding.tvUsernameHomepage.text = usernameLogin
-                binding.tvNameUserHomepage.text = userLogin!!.name
-                binding.tvNorekUserHomepage.text = userLogin!!.accountNumber.toString()
+                APIConnection.getWallets(view.context, db)
+                APIConnection.getCharities(view.context, db)
             }
 
-            val tempMyTopFourWallet = db.walletDao.getTop4(usernameLogin) as ArrayList<WalletEntity>
-            val tempAllMyWallet = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
-            var totalBalanceUser: Long = 0
-
-            for (wallet in tempAllMyWallet){
-                totalBalanceUser += wallet.walletBalance
-            }
+            delay(500)
 
             requireActivity().runOnUiThread {
-                binding.tvTotalAssetHomepage.text = "Rp ${totalBalanceUser.toRupiah()},00"
-                binding.rvUserWallets.adapter = RVWalletAdapter(view.context, usernameLogin, tempMyTopFourWallet){ nameAction: String, usernameLogin: String, selectedWallet: WalletEntity ->
-                    if(nameAction == "delete"){
-                        coroutine.launch {
-                            // UPDATE TO MAIN WALLET
-                            val getMainWallet = db.walletDao.getMainWallet(usernameLogin)
-                            getMainWallet!!.walletBalance += selectedWallet.walletBalance
+                // SET VIEW
+                binding.tvDateToday.text = SimpleDateFormat("EEEE\ndd MMM yyyy").format(Date())
 
-                            requireActivity().runOnUiThread {
-                                APIConnection.updateWallet(view.context, db, getMainWallet!!)
-                                APIConnection.deleteWallet(view.context, db, selectedWallet.wallet_id)
-                            }
+                binding.ivAddNewWallet.setOnClickListener {
+                    refreshLauncher.launch(Intent(view.context, UserAddWalletActivity::class.java).apply {
+                        putExtra("usernameLogin", usernameLogin)
+                    })
+                }
 
-                            // HABIS DI DELETE REFRESH PAGENYA SUPAYA RECYCLE VIEW E JUGA KE UPDATE
-                            requireActivity().runOnUiThread {
-                                parentFragmentManager
-                                    .beginTransaction()
-                                    .replace(R.id.mainFL, UserHomepageFragment(db, coroutine, usernameLogin))
-                                    .commit()
+                binding.btnToTopup.setOnClickListener {
+                    refreshLauncher.launch(Intent(view.context, UserTransactionActivity::class.java).apply {
+                        putExtra("usernameLogin", usernameLogin)
+                        putExtra("isWithdraw", "false")
+                    })
+                }
+
+                binding.btnToWithdraw.setOnClickListener {
+                    refreshLauncher.launch(Intent(view.context, UserTransactionActivity::class.java).apply {
+                        putExtra("usernameLogin", usernameLogin)
+                        putExtra("isWithdraw", "true")
+                    })
+                }
+
+                binding.btnToMyCharityHomepage.setOnClickListener {
+                    val intent = Intent(view.context, UserAddCharityActivity::class.java)
+                    intent.putExtra("usernameLogin", usernameLogin)
+                    startActivity(intent)
+                }
+
+                binding.btnToHistory.setOnClickListener {
+                    val intent = Intent(view.context, UserHistoryActivity::class.java)
+                    intent.putExtra("usernameLogin", usernameLogin)
+                    startActivity(intent)
+                }
+
+                coroutine.launch {
+                    val userLogin = db.userDao.getFromUsername(usernameLogin)
+                    requireActivity().runOnUiThread {
+                        binding.tvUsernameHomepage.text = usernameLogin
+                        binding.tvNameUserHomepage.text = userLogin!!.name
+                        binding.tvNorekUserHomepage.text = userLogin.accountNumber.toString()
+                    }
+
+                    val tempMyTopFourWallet = db.walletDao.getTop4(usernameLogin) as ArrayList<WalletEntity>
+                    val tempAllMyWallet = db.walletDao.getAllMyWallet(usernameLogin) as ArrayList<WalletEntity>
+                    var totalBalanceUser: Long = 0
+
+                    for (wallet in tempAllMyWallet){
+                        totalBalanceUser += wallet.walletBalance
+                    }
+
+                    requireActivity().runOnUiThread {
+                        binding.tvTotalAssetHomepage.text = "Rp ${totalBalanceUser.toRupiah()},00"
+                        binding.rvUserWallets.adapter = RVWalletAdapter(view.context, usernameLogin, tempMyTopFourWallet){ nameAction: String, usernameLogin: String, selectedWallet: WalletEntity ->
+                            if(nameAction == "delete"){
+                                coroutine.launch {
+                                    val checkWalletFromCharity = db.charityDao.getCharityFromWallet(selectedWallet.wallet_id, LocalDate.now().toString())
+
+                                    if(checkWalletFromCharity?.size != 0) {
+                                        requireActivity().runOnUiThread {
+                                            Toast.makeText(
+                                                view.context,
+                                                "Oopps! Can't delete this wallet because it's being used for charity!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    } else {
+                                        // UPDATE TO MAIN WALLET
+                                        val getMainWallet = db.walletDao.getMainWallet(usernameLogin)
+                                        getMainWallet!!.walletBalance += selectedWallet.walletBalance
+
+                                        requireActivity().runOnUiThread {
+                                            loadingAnim.visibility = View.VISIBLE
+                                            APIConnection.updateWallet(view.context, db, getMainWallet!!)
+                                            APIConnection.deleteWallet(view.context, db, selectedWallet.wallet_id)
+                                        }
+
+                                        delay(4000)
+
+                                        requireActivity().runOnUiThread {
+                                            loadingAnim.visibility = View.GONE
+
+                                            // HABIS DI DELETE REFRESH PAGENYA SUPAYA RECYCLE VIEW E JUGA KE UPDATE
+                                            parentFragmentManager
+                                                .beginTransaction()
+                                                .replace(R.id.mainFL, UserHomepageFragment(db, coroutine, usernameLogin))
+                                                .commit()
+                                        }
+                                    }
+                                }
                             }
                         }
+                        binding.rvUserWallets.layoutManager = GridLayoutManager(view.context, 2)
                     }
                 }
-                binding.rvUserWallets.layoutManager = GridLayoutManager(view.context, 2)
             }
         }
     }

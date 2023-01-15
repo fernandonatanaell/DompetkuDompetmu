@@ -3,7 +3,9 @@ package id.ac.istts.dkdm.myactivity.user
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -22,6 +24,8 @@ class UserMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserMainBinding
     private lateinit var db: AppDatabase
     private val coroutine = CoroutineScope(Dispatchers.IO)
+    private var listenerEnabled = true
+    private var currentItem = 0
 
     // USER ATTRIBUTE
     private lateinit var usernameLogin: String
@@ -54,29 +58,48 @@ class UserMainActivity : AppCompatActivity() {
         // RECEIVE DATA FROM LOGIN INTENT
         usernameLogin = intent.getStringExtra("usernameLogin").toString()
 
+
         // SET NAVBAR
-        binding.mainNavbar.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.menu_user_home ->{
-                    swapToFrag("Homepage")
+        binding.mainNavbar.setOnNavigationItemSelectedListener { item ->
+            if (listenerEnabled) {
+                listenerEnabled = false
+                binding.mainNavbar.isClickable = false
+
+                Handler().postDelayed({
+                    listenerEnabled = true
+                    binding.mainNavbar.isClickable = true
+                }, 700)
+
+                when (item.itemId) {
+                    R.id.menu_user_home -> {
+                        swapToFrag("Homepage")
+                    }
+                    R.id.menu_user_charity -> {
+                        swapToFrag("Charity")
+                    }
+                    R.id.menu_user_transfer -> {
+                        refreshLauncher.launch(
+                            Intent(
+                                this,
+                                UserTransferActivity::class.java
+                            ).apply {
+                                putExtra("usernameLogin", usernameLogin)
+                            })
+                    }
+                    R.id.menu_user_inbox -> {
+                        swapToFrag("Inbox")
+                    }
+                    R.id.menu_user_profile -> {
+                        swapToFrag("Notification")
+                    }
+                    else -> {
+                        Toast.makeText(this, "LOL", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                R.id.menu_user_charity ->{
-                    swapToFrag("Charity")
-                }
-                R.id.menu_user_transfer ->{
-                    refreshLauncher.launch(Intent(this, UserTransferActivity::class.java).apply {
-                        putExtra("usernameLogin", usernameLogin)
-                    })
-                }
-                R.id.menu_user_inbox ->{
-                    swapToFrag("Inbox")
-                }
-                R.id.menu_user_profile ->{
-                    swapToFrag("Notification")
-                }
-                else ->{
-                }
+            } else {
+                binding.mainNavbar.menu.getItem(currentItem).isChecked
             }
+
             true
         }
 
@@ -88,21 +111,29 @@ class UserMainActivity : AppCompatActivity() {
             "Homepage" -> { // Homepage fragment
                 lastFragmentActive = "Homepage"
                 binding.mainNavbar.menu.getItem(0).isChecked = true
+                currentItem = 0
+
                 UserHomepageFragment(db, coroutine, usernameLogin)
             }
             "Charity" -> { // Charity fragment
                 lastFragmentActive = "Charity"
                 binding.mainNavbar.menu.getItem(1).isChecked = true
+                currentItem = 1
+
                 UserCharityFragment(db, coroutine, usernameLogin)
             }
             "Inbox" -> { // Inbox fragment
                 lastFragmentActive = "Inbox"
                 binding.mainNavbar.menu.getItem(3).isChecked = true
+                currentItem = 3
+
                 UserNotificationFragment(db, coroutine, usernameLogin)
             }
             else -> { // Profile fragment
                 lastFragmentActive = "Profile"
                 binding.mainNavbar.menu.getItem(4).isChecked = true
+                currentItem = 4
+
                 val tempUserProfileFragment = UserProfileFragment(db, coroutine, usernameLogin)
                 tempUserProfileFragment.userLogout = {
                     finish()

@@ -38,8 +38,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         db = AppDatabase.build(this)
 
-        binding.etUsernameLogin.setText("windahbasudara")
-        binding.etPasswordLogin.setText("bocilkematian")
+//        binding.etUsernameLogin.setText("windahbasudara")
+//        binding.etPasswordLogin.setText("bocilkematian")
 
         APIConnection.getUsers(this, db)
 
