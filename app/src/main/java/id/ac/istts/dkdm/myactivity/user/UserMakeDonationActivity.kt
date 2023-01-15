@@ -17,6 +17,7 @@ import id.ac.istts.dkdm.myapiconnection.APIConnection
 import id.ac.istts.dkdm.mydatabase.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
@@ -153,6 +154,7 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                     APIConnection.updateCharity(this@UserMakeDonationActivity, db, selectedCharity)
                                 }
 
+                                delay(1000)
 
                                 // UPDATE WALLET BALANCE USER WHO DONATE
                                 selectedWallet.walletBalance -= amountDonation.toLong()
@@ -160,6 +162,8 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     APIConnection.updateWallet(this@UserMakeDonationActivity, db, selectedWallet)
                                 }
+
+                                delay(1000)
 
                                 // USER WHO DONATED TO THE CHARITY
                                 var newNotifications = NotificationEntity(
@@ -172,6 +176,8 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
                                 }
+
+                                delay(1000)
 
                                 var newHistory = HistoryEntity(
                                     history_id = -1,
@@ -186,6 +192,7 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                     APIConnection.insertHistory(this@UserMakeDonationActivity, db, newHistory)
                                 }
 
+                                delay(1000)
 
                                 // UPDATE WALLET BALANCE USER WHO RECEIVED DONATED
                                 val walletDonated = db.walletDao.get(selectedCharity.source_id_wallet)
@@ -194,6 +201,8 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     APIConnection.updateWallet(this@UserMakeDonationActivity, db, walletDonated!!)
                                 }
+
+                                delay(1000)
 
                                 // OWNER CHARITY
                                 newNotifications = NotificationEntity(
@@ -206,6 +215,8 @@ class UserMakeDonationActivity : AppCompatActivity() {
                                 runOnUiThread {
                                     APIConnection.insertNotification(this@UserMakeDonationActivity, db, newNotifications)
                                 }
+
+                                delay(1000)
 
                                 newHistory = HistoryEntity(
                                     history_id = -1,
