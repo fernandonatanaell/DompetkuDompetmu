@@ -1,3 +1,2 @@
-# DompetkuDompetmu
-
-DompetkuDompetmu adalah aplikasi untuk mengelola uang berbasis android. Aplikasi ini memiliki fitur-fitur seperti top up, penarikan uang, dan transfer. Di aplikasi ini juga terdapat fitur yang memungkinkan user untuk berdonasi antar pengguna lainnya.
+<h1>About DompetkuDompetmu</h1>
+DompetkuDompetmu adalah aplikasi berbasis Android untuk mengelola uang secara digital. Aplikasi ini memiliki fitur-fitur seperti top up, penarikan uang, dan transfer. Di aplikasi ini juga terdapat fitur yang memungkinkan user untuk melakukan donasi antar pengguna lainnya. Aplikasi ini merupakan hasil dari salah satu tugas mata kuliah yang bernama "Mobile Device Programming".
